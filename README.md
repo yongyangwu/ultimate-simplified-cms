@@ -1,0 +1,3 @@
+了解本项目你需要学习如何配置prettier进行代码格式化
+我们需要安装一个标准vue项目最常用的一些npm包
+vue-router axios sass-embedded vue-i18n nprogress pinia pinia-plugin-persistedstate

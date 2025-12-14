@@ -1,0 +1,106 @@
+import router from "@/router/index";
+import type { RouteRecordRaw } from "vue-router";
+import mockMenuData from '@/api/menu.json'
+
+// 引入 views 文件夹下所有 vue 文件
+const modules = import.meta.glob("@/views/**/*.vue");
+
+// 菜单项类型定义
+interface MenuItem {
+    path: string;
+    name: string;
+    component?: string;
+    redirect?: string;
+    meta: {
+        icon?: string;
+        title: string;
+        isLink?: string;
+        isHide: boolean;
+        isFull: boolean;
+        isAffix: boolean;
+        isKeepAlive: boolean;
+        activeMenu?: string;
+    };
+    children?: MenuItem[];
+}
+
+/**
+ * @description 扁平化树形菜单数据
+ * @param menuList 树形菜单数据
+ * @returns 扁平化后的菜单数组
+ */
+const flattenMenuList = (menuList: MenuItem[]): MenuItem[] => {
+    // const result: MenuItem[] = [];
+
+    // const flatten = (items: MenuItem[]) => {
+    //     items.forEach(item => {
+    //         // 创建当前项的副本，移除 children
+    //         const { children, ...routeItem } = item;
+    //         result.push(routeItem);
+
+    //         // 如果有子菜单，递归处理
+    //         if (children && children.length > 0) {
+    //             flatten(children);
+    //         }
+    //     });
+    // };
+
+    // flatten(menuList);
+    let newMenuList: MenuItem[] = JSON.parse(JSON.stringify(menuList));
+    const result = newMenuList.flatMap(item => [item, ...(item.children ? flattenMenuList(item.children) : [])]);
+    return result;
+};
+/**
+ * @description 初始化动态路由
+ */
+export const initDynamicRouter = async () => {
+    try {
+        // 1. 扁平化树形菜单数据
+        const flatMenuList = flattenMenuList(mockMenuData.data as MenuItem[]);
+        console.log('flatMenuList--', flatMenuList)
+
+        // 2. 遍历扁平化后的菜单数据，动态添加路由
+        flatMenuList.forEach(item => {
+            // 创建路由配置对象
+            const routeConfig: any = {
+                path: item.path,
+                name: item.name,
+                meta: item.meta
+            };
+
+            // 处理重定向
+            if (item.redirect) {
+                routeConfig.redirect = item.redirect;
+            }
+
+            // 处理组件动态导入
+            if (item.component && typeof item.component === "string") {
+                const componentPath = "/src/views" + item.component + ".vue";
+                const componentLoader = modules[componentPath];
+                console.log(`路由 ${item.path} -> 组件路径: ${componentPath}`, componentLoader ? '✓存在' : '✗不存在');
+
+                if (componentLoader) {
+                    routeConfig.component = componentLoader;
+                } else {
+                    console.warn(`组件文件不存在: ${componentPath}`);
+                    return; // 跳过不存在的组件
+                }
+            }
+
+            // 根据 isFull 标识决定路由添加方式
+            if (item.meta?.isFull) {
+                // 全屏页面，直接添加到根路由
+                router.addRoute(routeConfig as RouteRecordRaw);
+            } else {
+                // 普通页面，添加到 layout 路由下
+                router.addRoute("layout", routeConfig as RouteRecordRaw);
+            }
+        });
+
+        console.log("动态路由初始化完成，共添加路由:", flatMenuList.length);
+
+    } catch (error) {
+        console.error("动态路由初始化失败:", error);
+        // 可以在这里添加错误处理逻辑，比如跳转到错误页面
+    }
+};

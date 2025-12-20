@@ -5,6 +5,9 @@ import axios from "axios";
 const service = axios.create({
     baseURL: "/api"
 });
+const mockService = axios.create({
+    baseURL: "/mock"
+});
 // 请求拦截器
 service.interceptors.request.use(
     function (config: any) {
@@ -15,6 +18,15 @@ service.interceptors.request.use(
     },
     function (error: any) {
         // 请求错误
+        return Promise.reject(error);
+    }
+);
+
+mockService.interceptors.request.use(
+    function (config: any) {
+        return config;
+    },
+    function (error: any) {
         return Promise.reject(error);
     }
 );
@@ -35,4 +47,20 @@ service.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+mockService.interceptors.response.use(
+    function (response: any) {
+        console.log('response', response)
+        if (response.status === 200) {
+            console.log(response.data.msg)
+            return Promise.resolve(response.data);
+        } else {
+            alert(response.data.msg)
+            return Promise.resolve(response.data);
+        }
+    },
+    function (error: any) {
+        return Promise.reject(error);
+    }
+);
 export default service;
+export { mockService };

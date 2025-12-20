@@ -1,0 +1,21 @@
+{
+    "language": "zh-CN",
+    "commitMessage": {
+        "language": "zh-CN",
+        "style": "conventional",
+        "maxLength": 100,
+        "includeScope": true,
+        "template": {
+            "feat": "✨ 新增功能: {description}",
+            "fix": "🐛 修复问题: {description}",
+            "docs": "📝 更新文档: {description}",
+            "style": "💄 样式调整: {description}",
+            "refactor": "♻️ 重构代码: {description}",
+            "perf": "⚡ 性能优化: {description}",
+            "test": "✅ 测试相关: {description}",
+            "chore": "🔧 构建配置: {description}",
+            "ci": "👷 CI配置: {description}",
+            "build": "📦 构建相关: {description}"
+        }
+    }
+}

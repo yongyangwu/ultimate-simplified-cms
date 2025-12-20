@@ -1,6 +1,7 @@
 import router from "@/router/index";
 import type { RouteRecordRaw } from "vue-router";
 import mockMenuData from '@/api/menu.json'
+import { getMenuApi } from "@/api/modules/system";
 
 // 引入 views 文件夹下所有 vue 文件
 const modules = import.meta.glob("@/views/**/*.vue");
@@ -55,9 +56,11 @@ const flattenMenuList = (menuList: MenuItem[]): MenuItem[] => {
  */
 export const initDynamicRouter = async () => {
     try {
-        // 1. 扁平化树形菜单数据
-        const flatMenuList = flattenMenuList(mockMenuData.data as MenuItem[]);
-        console.log('flatMenuList--', flatMenuList)
+        const menuList = await getMenuApi();
+        console.log("动态路由初始化完成，共添加路由:", menuList);
+        // // 1. 扁平化树形菜单数据
+        const flatMenuList = flattenMenuList(menuList.data as MenuItem[]);
+        // console.log('flatMenuList--', flatMenuList)
 
         // 2. 遍历扁平化后的菜单数据，动态添加路由
         flatMenuList.forEach(item => {
@@ -77,12 +80,12 @@ export const initDynamicRouter = async () => {
             if (item.component && typeof item.component === "string") {
                 const componentPath = "/src/views" + item.component + ".vue";
                 const componentLoader = modules[componentPath];
-                console.log(`路由 ${item.path} -> 组件路径: ${componentPath}`, componentLoader ? '✓存在' : '✗不存在');
+                // console.log(`路由 ${item.path} -> 组件路径: ${componentPath}`, componentLoader ? '✓存在' : '✗不存在');
 
                 if (componentLoader) {
                     routeConfig.component = componentLoader;
                 } else {
-                    console.warn(`组件文件不存在: ${componentPath}`);
+                    // console.warn(`组件文件不存在: ${componentPath}`);
                     return; // 跳过不存在的组件
                 }
             }
@@ -97,7 +100,7 @@ export const initDynamicRouter = async () => {
             }
         });
 
-        console.log("动态路由初始化完成，共添加路由:", flatMenuList.length);
+
 
     } catch (error) {
         console.error("动态路由初始化失败:", error);

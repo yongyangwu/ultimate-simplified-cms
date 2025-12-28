@@ -21,7 +21,7 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0', // 允许外部访问
-    port: 5173, // 开发服务器端口
+    port: 5174, // 开发服务器端口
     open: true, // 自动打开浏览器
     proxy: {
       // Mock 数据代理 - 走本地 mock 服务

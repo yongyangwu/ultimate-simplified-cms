@@ -1,10 +1,12 @@
 import request, { mockService } from "@/api";
+import menuData from '@/api/menu.json'
 // 获取菜单数据
 export const getMenuApi = () => {
-    return request({
-        url: "/menu/list",
-        method: "get"
-    });
+    return menuData
+    // return request({
+    //     url: "/menu/list",
+    //     method: "get"
+    // });
 };
 export const getMenuApiMock = () => {
     return mockService({

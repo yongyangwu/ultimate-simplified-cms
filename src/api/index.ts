@@ -72,7 +72,7 @@ mockService.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
     function (response: any) {
-        // hideLoading();
+        hideLoading();
 
         if (response.status === 200) {
             // 成功时不显示消息，只返回数据
@@ -113,7 +113,7 @@ service.interceptors.response.use(
 
 mockService.interceptors.response.use(
     function (response: any) {
-        // hideLoading();
+        hideLoading();
 
         if (response.status === 200) {
             // 成功时不显示消息，只返回数据
@@ -124,7 +124,7 @@ mockService.interceptors.response.use(
         }
     },
     function (error: any) {
-        // hideLoading();
+        hideLoading();
 
         const status = error.response?.status;
         const message = error.response?.data?.msg || error.message;

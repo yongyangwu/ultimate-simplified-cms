@@ -4,12 +4,121 @@
     :columns="columns"
     @search="handleSearch"
     @reset="handleReset"
+    :data="tableData"
   ></ultimate-table>
 </template>
 <script setup lang="ts">
-  import { reactive } from 'vue'
+  import { reactive, ref } from 'vue'
   import UltimateTable from '@/components/ultimate-table/index.vue'
   import type { ColumnProps } from '@/components/ultimate-table/type'
+
+  // 表格数据
+  const tableData = ref([
+    {
+      id: 1,
+      name: '张三',
+      gender: 1,
+      province: 1,
+      city: 11,
+      department: 1,
+      age: 28,
+      email: 'zhangsan@example.com',
+      phone: '13800138000',
+      status: 1,
+      createTime: '2024-01-15 10:30:00',
+    },
+    {
+      id: 2,
+      name: '李四',
+      gender: 2,
+      province: 2,
+      city: 21,
+      department: 2,
+      age: 32,
+      email: 'lisi@example.com',
+      phone: '13900139000',
+      status: 1,
+      createTime: '2024-02-20 14:20:00',
+    },
+    {
+      id: 3,
+      name: '王五',
+      gender: 1,
+      province: 3,
+      city: 31,
+      department: 3,
+      age: 25,
+      email: 'wangwu@example.com',
+      phone: '13700137000',
+      status: 0,
+      createTime: '2024-03-10 09:15:00',
+    },
+    {
+      id: 4,
+      name: '赵六',
+      gender: 2,
+      province: 1,
+      city: 12,
+      department: 4,
+      age: 30,
+      email: 'zhaoliu@example.com',
+      phone: '13600136000',
+      status: 1,
+      createTime: '2024-04-05 16:45:00',
+    },
+    {
+      id: 5,
+      name: '钱七',
+      gender: 1,
+      province: 2,
+      city: 22,
+      department: 1,
+      age: 27,
+      email: 'qianqi@example.com',
+      phone: '13500135000',
+      status: 0,
+      createTime: '2024-05-12 11:30:00',
+    },
+    {
+      id: 6,
+      name: '孙八',
+      gender: 2,
+      province: 3,
+      city: 32,
+      department: 2,
+      age: 29,
+      email: 'sunba@example.com',
+      phone: '13400134000',
+      status: 1,
+      createTime: '2024-06-18 15:20:00',
+    },
+    {
+      id: 7,
+      name: '周九',
+      gender: 1,
+      province: 1,
+      city: 13,
+      department: 3,
+      age: 31,
+      email: 'zhoujiu@example.com',
+      phone: '13300133000',
+      status: 1,
+      createTime: '2024-07-22 09:45:00',
+    },
+    {
+      id: 8,
+      name: '吴十',
+      gender: 2,
+      province: 2,
+      city: 23,
+      department: 4,
+      age: 26,
+      email: 'wushi@example.com',
+      phone: '13200132000',
+      status: 0,
+      createTime: '2024-08-30 13:10:00',
+    },
+  ])
 
   // 模拟异步获取省份列表的 API
   const fetchProvinces = async () => {

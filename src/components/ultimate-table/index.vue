@@ -6,21 +6,23 @@
     @reset="handleReset"
     @options-loaded="handleOptionsLoaded"
   ></search>
+  <Table :columns="props.columns" :data="props.data"></Table>
+  <table></table>
 </template>
 <script setup lang="ts">
-  import { reactive } from 'vue'
+  import { reactive, ref } from 'vue'
   import Search from './search/index.vue'
-  //  import Table from './components/ultimate-table/search/index.vue'
-  import type { ColumnProps } from '@/components/ultimate-table/type'
+  import Table from './table/index.vue'
 
+  import type { ColumnProps } from '@/components/ultimate-table/type'
   interface UltimateTableProps {
     columns?: ColumnProps[] // 搜索配置列
+    data?: any[] // 搜索配置列
   }
-
   const props = withDefaults(defineProps<UltimateTableProps>(), {
     columns: () => [],
+    data: () => [],
   })
-
   // 定义 emit
   const emit = defineEmits<{
     search: [searchParam: Record<string, any>]
@@ -59,12 +61,10 @@
       }
     })
   }
-
   // 处理搜索事件
   const handleSearch = (params: Record<string, any>) => {
     emit('search', params)
   }
-
   // 处理重置事件
   const handleReset = () => {
     emit('reset')

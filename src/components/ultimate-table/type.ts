@@ -24,6 +24,7 @@ export interface ColumnProps<T extends DefaultRow = any>
     // tag?: boolean; // 是否是标签展示
     // isShow?: boolean | Ref<boolean>; // 是否显示在表格当中
     search?: SearchProps; // 搜索项配置
+    tableColumn?: any;
     // enum?: EnumProps[] | ((params?: any) => Promise<any>) | Ref<EnumProps[]>; // 枚举类型（字典）
     // isFilterEnum?: boolean; // 当前单元格值是否根据 enum 格式化（示例：enum 只作为搜索项数据）
     // fieldNames?: FieldNamesProps; // 指定 label && value && children 的 key 值

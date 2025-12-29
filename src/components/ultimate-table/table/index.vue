@@ -1,14 +1,6 @@
 <template>
   <el-card style="margin-top: 12px">
-    <el-table
-      :data="tableData"
-      :border="border"
-      :stripe="stripe"
-      :height="height"
-      :max-height="maxHeight"
-      style="width: 100%"
-      v-loading="loading"
-    >
+    <el-table v-bind="$attrs" :data="tableData" style="width: 100%">
       <!-- 动态渲染列 -->
       <template v-for="column in columns" :key="column.prop">
         <!-- 选择列 -->
@@ -75,6 +67,7 @@
         </slot>
       </template>
     </el-table>
+    <el-pagination />
   </el-card>
 </template>
 
@@ -85,19 +78,11 @@
   interface TableProps {
     columns: ColumnProps[] // 列配置
     data?: any[] // 表格数据
-    border?: boolean // 是否显示边框
-    stripe?: boolean // 是否显示斑马纹
-    height?: string | number // 表格高度
-    maxHeight?: string | number // 表格最大高度
-    loading?: boolean // 是否显示加载状态
   }
 
   const props = withDefaults(defineProps<TableProps>(), {
     columns: () => [],
     data: () => [],
-    border: true,
-    stripe: false,
-    loading: false,
   })
 
   // 表格数据

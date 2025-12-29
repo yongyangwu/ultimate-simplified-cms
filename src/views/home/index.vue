@@ -2,6 +2,7 @@
   <!-- <div>home</div> -->
   <ultimate-table
     :columns="columns"
+    :table-props="tableProps"
     @search="handleSearch"
     @reset="handleReset"
     :data="tableData"
@@ -11,6 +12,21 @@
   import { reactive, ref } from 'vue'
   import UltimateTable from '@/components/ultimate-table/index.vue'
   import type { ColumnProps } from '@/components/ultimate-table/type'
+
+  // Element Plus Table 原生属性配置
+  const tableProps = reactive({
+    border: true,
+    // stripe: true,
+    highlightCurrentRow: true,
+    // 可以添加更多 el-table 的原生属性
+    // size: 'default',
+    // height: '300px',
+    // maxHeight: '600px',
+    // showHeader: true,
+    // fit: true,
+    // rowKey: 'id',
+    // defaultSort: { prop: 'id', order: 'ascending' },
+  })
 
   // 表格数据
   const tableData = ref([

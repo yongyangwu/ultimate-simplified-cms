@@ -6,22 +6,29 @@
     @reset="handleReset"
     @options-loaded="handleOptionsLoaded"
   ></search>
-  <Table :columns="props.columns" :data="props.data"></Table>
-  <table></table>
+  <Table
+    :columns="props.columns"
+    :data="props.data"
+    v-bind="props.tableProps"
+  ></Table>
 </template>
 <script setup lang="ts">
-  import { reactive, ref } from 'vue'
+  import { reactive } from 'vue'
   import Search from './search/index.vue'
   import Table from './table/index.vue'
 
   import type { ColumnProps } from '@/components/ultimate-table/type'
+
   interface UltimateTableProps {
-    columns?: ColumnProps[] // 搜索配置列
-    data?: any[] // 搜索配置列
+    columns?: ColumnProps[] // 列配置
+    data?: any[] // 表格数据
+    tableProps?: Record<string, any> // Element Plus Table 原生属性
   }
+
   const props = withDefaults(defineProps<UltimateTableProps>(), {
     columns: () => [],
     data: () => [],
+    tableProps: () => ({}),
   })
   // 定义 emit
   const emit = defineEmits<{

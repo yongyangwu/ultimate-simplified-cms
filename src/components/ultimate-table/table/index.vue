@@ -67,6 +67,7 @@
     </div>
     <el-table
       v-bind="$attrs"
+      v-loading="props.loading"
       :data="tableData"
       style="width: 100%"
       @selection-change="handleSelectionChange"
@@ -101,6 +102,25 @@
         >
           <template #default="scope">
             <slot name="expand" :row="scope.row" :$index="scope.$index" />
+          </template>
+        </el-table-column>
+
+        <!-- 操作列 -->
+        <el-table-column
+          v-else-if="column.prop === 'operation'"
+          :label="column.label || '操作'"
+          :width="column.width"
+          :min-width="column.minWidth"
+          :fixed="column.fixed || 'right'"
+          :align="column.align || 'center'"
+        >
+          <template #default="scope">
+            <slot name="operation" :row="scope.row" :$index="scope.$index">
+              <!-- 默认操作按钮 -->
+              <el-button type="primary" link size="small">查看</el-button>
+              <el-button type="primary" link size="small">编辑</el-button>
+              <el-button type="danger" link size="small">删除</el-button>
+            </slot>
           </template>
         </el-table-column>
 
@@ -162,6 +182,7 @@
   interface TableProps {
     columns: ColumnProps[] // 列配置
     data?: any[] // 表格数据
+    loading?: boolean // 加载状态
     paginationProps?: Record<string, any> // Element Plus Pagination 原生属性
     total?: number // 总条数
     pageSize?: number // 每页显示条数
@@ -171,6 +192,7 @@
   const props = withDefaults(defineProps<TableProps>(), {
     columns: () => [],
     data: () => [],
+    loading: false,
     paginationProps: () => ({}),
     total: 0,
     pageSize: 10,

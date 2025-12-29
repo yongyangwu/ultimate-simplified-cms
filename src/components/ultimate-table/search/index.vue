@@ -13,8 +13,7 @@
               :is="getAsyncComponent(item.search?.el)"
               v-if="item.prop && (item.search?.el || item.search)"
               v-model.trim="props.searchParam[item.search?.key || item.prop]"
-              v-bind="item.search?.props"
-              :placeholder="item.search?.placeholder"
+              v-bind="{ ...item.search?.props, ...item.search?.elProps }"
               @change="handleFieldChange(item)"
               style="width: 100%"
             >

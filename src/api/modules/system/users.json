@@ -1,0 +1,45 @@
+{
+    "code": 200,
+    "data": [
+        {
+            "id": 1,
+            "name": "张三",
+            "gender": 1,
+            "province": 1,
+            "city": 11,
+            "department": 1,
+            "age": 28,
+            "email": "zhangsan@example.com",
+            "phone": "13800138001",
+            "status": 1,
+            "createTime": "2024-01-15 10:30:00"
+        },
+        {
+            "id": 2,
+            "name": "李四",
+            "gender": 2,
+            "province": 2,
+            "city": 21,
+            "department": 2,
+            "age": 32,
+            "email": "lisi@example.com",
+            "phone": "13800138002",
+            "status": 1,
+            "createTime": "2024-01-16 11:20:00"
+        },
+        {
+            "id": 3,
+            "name": "王五",
+            "gender": 1,
+            "province": 3,
+            "city": 31,
+            "department": 3,
+            "age": 25,
+            "email": "wangwu@example.com",
+            "phone": "13800138003",
+            "status": 0,
+            "createTime": "2024-01-17 09:15:00"
+        }
+    ],
+    "msg": "success"
+}

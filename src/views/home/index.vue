@@ -3,13 +3,61 @@
   <ultimate-table
     :columns="columns"
     :table-props="tableProps"
+    :pagination-props="paginationProps"
+    :total="total"
+    v-model:page-size="pageSize"
+    v-model:current-page="currentPage"
     @search="handleSearch"
     @reset="handleReset"
+    @size-change="handleSizeChange"
+    @current-change="handleCurrentChange"
+    @add="handleAdd"
+    @batch-delete="handleBatchDelete"
+    @export="handleExport"
+    @refresh="handleRefresh"
     :data="tableData"
-  ></ultimate-table>
+  >
+    <!-- 方式1: 使用 tableHeaderExtra 插槽在默认按钮后面追加额外按钮 -->
+    <template #tableHeaderExtra="{ selectedRows }">
+      <el-button
+        :disabled="selectedRows.length === 0"
+        @click="handleBatchImport(selectedRows)"
+      >
+        <el-icon style="margin-right: 4px"><Upload /></el-icon>
+        批量导入
+      </el-button>
+      <el-button @click="handlePrint">
+        <el-icon style="margin-right: 4px"><Printer /></el-icon>
+        打印
+      </el-button>
+    </template>
+
+    <!-- 方式2: 完全自定义左侧按钮（取消注释下面的代码会覆盖默认按钮） -->
+    <!-- 
+    <template #tableHeader="{ selectedRows }">
+      <el-button type="primary" @click="handleAdd">
+        <el-icon style="margin-right: 4px"><Plus /></el-icon>
+        自定义新增
+      </el-button>
+      <el-button 
+        type="danger" 
+        :disabled="selectedRows.length === 0"
+        @click="handleBatchDelete(selectedRows)"
+      >
+        <el-icon style="margin-right: 4px"><Delete /></el-icon>
+        自定义删除 ({{ selectedRows.length }})
+      </el-button>
+      <el-button @click="handleCustomAction">
+        <el-icon style="margin-right: 4px"><Star /></el-icon>
+        自定义操作
+      </el-button>
+    </template>
+    -->
+  </ultimate-table>
 </template>
 <script setup lang="ts">
   import { reactive, ref } from 'vue'
+  import { Upload, Printer } from '@element-plus/icons-vue'
   import UltimateTable from '@/components/ultimate-table/index.vue'
   import type { ColumnProps } from '@/components/ultimate-table/type'
 
@@ -27,6 +75,23 @@
     // rowKey: 'id',
     // defaultSort: { prop: 'id', order: 'ascending' },
   })
+
+  // Element Plus Pagination 原生属性配置
+  const paginationProps = reactive({
+    // total、pageSize、currentPage 已在组件内部定义，不需要传入
+    // 只需要传入其他需要自定义的属性即可
+    pageSizes: [10, 20, 50, 100], // 每页显示个数选择器的选项（可选，默认 [10, 20, 50, 100]）
+    layout: 'total, sizes, prev, pager, next, jumper', // 组件布局（可选，默认此值）
+    background: true, // 是否为分页按钮添加背景色（可选，默认 true）
+    // small: false, // 是否使用小型分页样式
+    // disabled: false, // 是否禁用分页
+    // hideOnSinglePage: false, // 只有一页时是否隐藏
+  })
+
+  // 分页数据
+  const total = ref(100)
+  const pageSize = ref(10)
+  const currentPage = ref(1)
 
   // 表格数据
   const tableData = ref([
@@ -187,6 +252,16 @@
 
   const columns = reactive<ColumnProps[]>([
     {
+      type: 'selection',
+      width: 55,
+      fixed: 'left',
+    },
+    {
+      type: 'index',
+      label: '序号',
+      width: 60,
+    },
+    {
       label: '姓名',
       prop: 'name',
       search: {
@@ -262,5 +337,53 @@
   const handleReset = () => {
     console.log('重置搜索')
     // 在这里可以执行重置后的操作，比如重新加载数据
+  }
+
+  // 处理每页条数改变
+  const handleSizeChange = (size: number) => {
+    console.log('每页条数改变：', size)
+    // 重新加载数据
+  }
+
+  // 处理当前页改变
+  const handleCurrentChange = (page: number) => {
+    console.log('当前页改变：', page)
+    // 重新加载数据
+  }
+
+  // 处理新增
+  const handleAdd = () => {
+    console.log('新增')
+    // 打开新增对话框或跳转到新增页面
+  }
+
+  // 处理批量删除
+  const handleBatchDelete = (selectedRows: any[]) => {
+    console.log('批量删除选中的行：', selectedRows)
+    // 弹出确认对话框，然后调用删除 API
+  }
+
+  // 处理导出
+  const handleExport = () => {
+    console.log('导出数据')
+    // 调用导出 API 或生成 Excel 文件
+  }
+
+  // 处理刷新
+  const handleRefresh = () => {
+    console.log('刷新数据')
+    // 重新加载表格数据
+  }
+
+  // 处理批量导入
+  const handleBatchImport = (selectedRows: any[]) => {
+    console.log('批量导入选中的行：', selectedRows)
+    // 打开导入对话框
+  }
+
+  // 处理打印
+  const handlePrint = () => {
+    console.log('打印表格')
+    // 调用打印功能
   }
 </script>

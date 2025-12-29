@@ -10,7 +10,29 @@
     :columns="props.columns"
     :data="props.data"
     v-bind="props.tableProps"
-  ></Table>
+    :pagination-props="props.paginationProps"
+    :total="props.total"
+    :page-size="props.pageSize"
+    :current-page="props.currentPage"
+    @update:page-size="emit('update:pageSize', $event)"
+    @update:current-page="emit('update:currentPage', $event)"
+    @size-change="emit('size-change', $event)"
+    @current-change="emit('current-change', $event)"
+    @add="emit('add')"
+    @batch-delete="emit('batch-delete', $event)"
+    @export="emit('export')"
+    @refresh="emit('refresh')"
+  >
+    <!-- 透传 tableHeader 插槽 - 完全自定义左侧按钮 -->
+    <template #tableHeader="{ selectedRows }">
+      <slot name="tableHeader" :selected-rows="selectedRows"></slot>
+    </template>
+
+    <!-- 透传 tableHeaderExtra 插槽 - 在默认按钮后面追加额外按钮 -->
+    <template #tableHeaderExtra="{ selectedRows }">
+      <slot name="tableHeaderExtra" :selected-rows="selectedRows"></slot>
+    </template>
+  </Table>
 </template>
 <script setup lang="ts">
   import { reactive } from 'vue'
@@ -23,17 +45,33 @@
     columns?: ColumnProps[] // 列配置
     data?: any[] // 表格数据
     tableProps?: Record<string, any> // Element Plus Table 原生属性
+    paginationProps?: Record<string, any> // Element Plus Pagination 原生属性
+    total?: number // 总条数
+    pageSize?: number // 每页显示条数
+    currentPage?: number // 当前页码
   }
 
   const props = withDefaults(defineProps<UltimateTableProps>(), {
     columns: () => [],
     data: () => [],
     tableProps: () => ({}),
+    paginationProps: () => ({}),
+    total: 0,
+    pageSize: 10,
+    currentPage: 1,
   })
   // 定义 emit
   const emit = defineEmits<{
     search: [searchParam: Record<string, any>]
     reset: []
+    'update:pageSize': [pageSize: number]
+    'update:currentPage': [currentPage: number]
+    'size-change': [size: number]
+    'current-change': [page: number]
+    add: []
+    'batch-delete': [selectedRows: any[]]
+    export: []
+    refresh: []
   }>()
 
   const searchParam = reactive<Record<string, any>>({})

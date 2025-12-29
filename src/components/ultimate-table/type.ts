@@ -22,7 +22,7 @@ export interface ColumnProps<T extends DefaultRow = any>
     extends Partial<Omit<TableColumnCtx<T>, "children" | "renderCell" | "renderHeader" | "type">> {
     type?: TypeProps;
     // tag?: boolean; // 是否是标签展示
-    // isShow?: boolean | Ref<boolean>; // 是否显示在表格当中
+    isShow?: boolean; // 是否显示在表格当中（默认为 true）
     search?: SearchProps; // 搜索项配置
     tableColumn?: any;
     // enum?: EnumProps[] | ((params?: any) => Promise<any>) | Ref<EnumProps[]>; // 枚举类型（字典）

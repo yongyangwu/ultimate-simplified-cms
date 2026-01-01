@@ -1,21 +1,17 @@
 import type { TableColumnCtx } from "element-plus/es/components/table/src/table-column/defaults";
 import type { DefaultRow } from "element-plus/es/components/table/src/table/defaults";
 
-export interface ProTableProps {
-    columns: ColumnProps[]; // 列配置项  ==> 必传
-    data?: any[]; // 静态 table data 数据，若存在则不会使用 requestApi 返回的 data ==> 非必传
-    requestApi?: (params: any) => Promise<any>; // 请求表格数据的 api ==> 非必传
-    requestAuto?: boolean; // 是否自动执行请求 api ==> 非必传（默认为true）
-    dataCallback?: (data: any) => any; // 返回数据的回调函数，可以对数据进行处理 ==> 非必传
-    responseMapping?: ResponseMapping; // 响应数据字段映射配置 ==> 非必传
-    initParam?: any; // 初始化请求参数 ==> 非必传（默认为{}）
-    // title?: string; // 表格标题，目前只在打印的时候用到 ==> 非必传
-    // // pagination?: boolean; // 是否需要分页组件 ==> 非必传（默认为true）
-    // pagination?: PaginationConfig | boolean;
-    // border?: boolean; // 是否带有纵向边框 ==> 非必传（默认为true）
-    // toolButton?: ToolButtonConfig; // 是否显示表格功能按钮 ==> 非必传（默认为true）
-    // rowKey?: string; // 行数据的 Key，用来优化 Table 的渲染，当表格数据多选时，所指定的 id ==> 非必传（默认为 id）
-    // searchCol?: number | Record<BreakPoint, number>; // 表格搜索项 每列占比配置 ==> 非必传 { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }
+export interface UltimateTableProps {
+    columns?: ColumnProps[] // 列配置
+    data?: any[] // 静态表格数据（如果传了 data，则不使用 requestApi）
+    requestApi?: (params: any) => Promise<any> // 请求表格数据的 API
+    requestAuto?: boolean // 是否自动执行请求（默认 true）
+    dataCallback?: (data: any) => any // 数据处理回调
+    requestMapping?: RequestMapping // 请求参数字段映射，默认 { pageNo: 'pageNo', pageSize: 'pageSize' }
+    responseMapping?: ResponseMapping // 响应数据字段映射，默认 { list: 'data', total: 'total' }
+    initParam?: Record<string, any> // 初始化请求参数
+    tableProps?: Record<string, any> // Element Plus Table 原生属性
+    paginationProps?: Record<string, any> // Element Plus Pagination 原生属性
 }
 
 // 响应数据字段映射配置
@@ -31,21 +27,10 @@ export interface RequestMapping {
 }
 
 export interface ColumnProps<T extends DefaultRow = any>
-    extends Partial<Omit<TableColumnCtx<T>, "children" | "renderCell" | "renderHeader" | "type">> {
-    type?: TypeProps;
-    // tag?: boolean; // 是否是标签展示
+    extends Partial<Omit<TableColumnCtx<T>, "children" | "renderCell" | "renderHeader">> {
     isShow?: boolean; // 是否显示在表格当中（默认为 true）
     search?: SearchProps; // 搜索项配置
-    // enum?: EnumProps[] | ((params?: any) => Promise<any>) | Ref<EnumProps[]>; // 枚举类型（字典）
-    // isFilterEnum?: boolean; // 当前单元格值是否根据 enum 格式化（示例：enum 只作为搜索项数据）
-    // fieldNames?: FieldNamesProps; // 指定 label && value && children 的 key 值
-    // headerRender?: (scope: HeaderRenderScope<T>) => VNodeChild; // 自定义表头内容渲染（tsx语法）
-    // render?: (scope: RenderScope<T>) => VNodeChild; // 自定义单元格内容渲染（tsx语法）
-    // _children?: ColumnProps<T>[]; // 多级表头
-    // tip?: (() => VNodeChild) | string; // 表头提示
 }
-export type TypeProps = "index" | "selection" | "expand" | "drag";
-
 // 响应式断点类型
 export type BreakPoint = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -60,9 +45,6 @@ export type SearchProps = {
     defaultValue?: any; // 搜索项默认值
     span?: number | Partial<Record<BreakPoint, number>>; // 栅格占据的列数，支持响应式配置 { xs: 24, sm: 12, md: 8, lg: 6, xl: 6 }
     elProps?: Record<string, any>; // Element Plus 原生组件属性，会透传给对应的表单组件（如 el-input、el-select 等）
-    // offset?: number | Record<BreakPoint, number>; // 搜索字段左侧偏移列数
-    // tip?: (() => VNodeChild) | string; // 搜索项提示文字
-    // render?: (scope: SearchRenderScope) => VNodeChild; // 自定义搜索内容渲染（tsx语法）
 };
 export type SearchType =
     | "el-input" // 文本框

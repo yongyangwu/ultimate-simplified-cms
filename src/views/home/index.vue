@@ -3,8 +3,6 @@
   <ultimate-table
     :columns="columns"
     :request-api="getUserListApi"
-    :table-props="tableProps"
-    :pagination-props="paginationProps"
     @add="handleAdd"
     @batch-delete="handleBatchDelete"
     @export="handleExport"
@@ -52,20 +50,6 @@
   import UltimateTable from '@/components/ultimate-table/index.vue'
   import type { ColumnProps } from '@/components/ultimate-table/type'
   import { getUserListApi } from '@/api/modules/system/index'
-
-  // Element Plus Table 原生属性配置
-  const tableProps = reactive({
-    border: true,
-    // stripe: true,
-    highlightCurrentRow: true,
-  })
-
-  // Element Plus Pagination 原生属性配置
-  const paginationProps = reactive({
-    pageSizes: [10, 20, 50, 100],
-    layout: 'total, sizes, prev, pager, next, jumper',
-    background: true,
-  })
 
   // 模拟异步获取省份列表的 API
   const fetchProvinces = async () => {
@@ -134,16 +118,40 @@
         el: 'el-input',
         order: 1,
         elProps: {
-          placeholder: '请选择姓名',
+          placeholder: '请输入姓名',
         },
       },
     },
+    {
+      label: '邮箱',
+      prop: 'email',
+      minWidth: 200,
+      search: {
+        el: 'el-input',
+        order: 1,
+        elProps: {
+          placeholder: '请输入邮箱',
+        },
+      },
+    },
+    {
+      label: '手机',
+      prop: 'phone',
+      minWidth: 200,
+      search: {
+        el: 'el-input',
+        order: 1,
+        elProps: {
+          placeholder: '请输入手机号',
+        },
+      },
+    },
+
     {
       label: '性别',
       prop: 'gender',
       search: {
         el: 'el-select',
-
         order: 2,
         options: [
           { label: '男', value: 1 },
@@ -151,6 +159,7 @@
         ],
         elProps: {
           placeholder: '请选择性别',
+          clearable: true,
         },
       },
     },
@@ -197,6 +206,11 @@
           placeholder: '请选择部门',
         },
       },
+    },
+    {
+      label: '创建时间',
+      prop: 'createTime',
+      minWidth: 200,
     },
     {
       label: '操作',

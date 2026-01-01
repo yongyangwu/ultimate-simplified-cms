@@ -44,36 +44,17 @@
   import { reactive, ref, onMounted, watch } from 'vue'
   import Search from './search/index.vue'
   import Table from './table/index.vue'
-
-  import type {
-    ColumnProps,
-    ResponseMapping,
-    RequestMapping,
-  } from '@/components/ultimate-table/type'
-
-  interface UltimateTableProps {
-    columns?: ColumnProps[] // 列配置
-    data?: any[] // 静态表格数据（如果传了 data，则不使用 requestApi）
-    requestApi?: (params: any) => Promise<any> // 请求表格数据的 API
-    requestAuto?: boolean // 是否自动执行请求（默认 true）
-    dataCallback?: (data: any) => any // 数据处理回调
-    responseMapping?: ResponseMapping // 响应数据字段映射，默认 { list: 'data', total: 'total' }
-    requestMapping?: RequestMapping // 请求参数字段映射，默认 { pageNo: 'pageNo', pageSize: 'pageSize' }
-    initParam?: Record<string, any> // 初始化请求参数
-    tableProps?: Record<string, any> // Element Plus Table 原生属性
-    paginationProps?: Record<string, any> // Element Plus Pagination 原生属性
-  }
-
+  import type { UltimateTableProps } from '@/components/ultimate-table/type'
   const props = withDefaults(defineProps<UltimateTableProps>(), {
     columns: () => [],
     data: undefined,
     requestApi: undefined,
     requestAuto: true,
     initParam: () => ({}),
-    tableProps: () => ({}),
+    tableProps: () => ({ border: true, highlightCurrentRow: true }),
     paginationProps: () => ({}),
-    responseMapping: () => ({ list: 'data', total: 'total' }),
     requestMapping: () => ({ pageNo: 'pageNo', pageSize: 'pageSize' }),
+    responseMapping: () => ({ list: 'data', total: 'total' }),
   })
 
   // 定义 emit
@@ -144,24 +125,35 @@
       tableData.value = props.data
       return
     }
-
     // 如果没有传 requestApi，不请求
-    if (!props.requestApi) return
-
+    if (!props.requestApi) {
+      return
+    }
     try {
       loading.value = true
-
       // 合并参数：初始化参数 + 搜索参数 + 分页参数
-      const params = {
+      const rawParams = {
         ...props.initParam,
         ...searchParam,
         [props.requestMapping?.pageNo || 'pageNo']: currentPage.value,
         [props.requestMapping?.pageSize || 'pageSize']: pageSize.value,
       }
+
+      // 剔除空值参数（null、undefined、空字符串）
+      const params = Object.keys(rawParams).reduce(
+        (acc, key) => {
+          const value = rawParams[key]
+          if (value !== null && value !== undefined && value !== '') {
+            acc[key] = value
+          }
+          return acc
+        },
+        {} as Record<string, any>
+      )
+
       console.log('params-----', params)
-
       const result = await props.requestApi(params)
-
+      console.log('result----', result)
       // 如果有数据处理回调，使用回调处理数据
       let processedData = result
       if (props.dataCallback) {

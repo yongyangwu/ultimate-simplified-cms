@@ -53,10 +53,8 @@
 
 ## 目录
 
-- [Props 配置](#props-配置)
-  - [UltimateTable Props](#ultimatetable-props)
-  - [ResponseMapping](#responsemapping)
-  - [RequestMapping](#requestmapping)
+- [UltimateTableProps 配置](#UltimateTableProps-配置)
+
 - [ColumnProps 配置](#columnprops-配置)
   - [基础配置](#基础配置)
   - [特殊列类型](#特殊列类型)
@@ -71,22 +69,97 @@
 
 ---
 
-## Props 配置
+## UltimateTableProps
 
-### UltimateTable Props
+<!-- prettier-ignore-start -->
+| 参数                         | 说明 | 类型 | 默认值 |
+| :--------------------------- | :--- | :--- | :----- |
+| <div style="white-space: nowrap;">`columns`</div> | 列配置数组 | [`ColumnProps[]`](#columnprops-配置) | `[]` |
+| <div style="white-space: nowrap;">`data`</div> | 静态表格数据（传入后不使用 requestApi） | `any[]` | `undefined` |
+| <div style="white-space: nowrap;">`requestApi`</div> | 请求表格数据的 API 方法 | `(params: any) => Promise<any>` | `undefined` |
+| <div style="white-space: nowrap;">`requestAuto`</div> | 是否自动执行请求 | `boolean` | `true` |
+| <div style="white-space: nowrap;">`dataCallback`</div> | 数据处理回调函数 | `(data: any) => any` | `undefined` |
+| <div style="white-space: nowrap;">`responseMapping`</div> | 响应数据字段映射 | [`ResponseMapping`](#responsemapping) | `{ list: 'data', total: 'total' }` |
+| <div style="white-space: nowrap;">`requestMapping`</div> | 请求参数字段映射 | [`RequestMapping`](#requestmapping) | `{ pageNo: 'pageNo', pageSize: 'pageSize' }` |
+| <div style="white-space: nowrap;">`initParam`</div> | 初始化请求参数 | `Record<string, any>` | `{}` |
+| <div style="white-space: nowrap;">`tableProps`</div> | Element Plus Table 原生属性 | `Record<string, any>` | `{}` |
+| <div style="white-space: nowrap;">`paginationProps`</div> | Element Plus Pagination 原生属性 | `Record<string, any>` | `{}` |
+<!-- prettier-ignore-end -->
 
-| 参数              | 说明                                    | 类型                                  | 默认值                                       |
-| ----------------- | --------------------------------------- | ------------------------------------- | -------------------------------------------- |
-| `columns`         | 列配置数组                              | [`ColumnProps[]`](#columnprops-配置)  | `[]`                                         |
-| `data`            | 静态表格数据（传入后不使用 requestApi） | `any[]`                               | `undefined`                                  |
-| `requestApi`      | 请求表格数据的 API 方法                 | `(params: any) => Promise<any>`       | `undefined`                                  |
-| `requestAuto`     | 是否自动执行请求                        | `boolean`                             | `true`                                       |
-| `dataCallback`    | 数据处理回调函数                        | `(data: any) => any`                  | `undefined`                                  |
-| `responseMapping` | 响应数据字段映射                        | [`ResponseMapping`](#responsemapping) | `{ list: 'data', total: 'total' }`           |
-| `requestMapping`  | 请求参数字段映射                        | [`RequestMapping`](#requestmapping)   | `{ pageNo: 'pageNo', pageSize: 'pageSize' }` |
-| `initParam`       | 初始化请求参数                          | `Record<string, any>`                 | `{}`                                         |
-| `tableProps`      | Element Plus Table 原生属性             | `Record<string, any>`                 | `{}`                                         |
-| `paginationProps` | Element Plus Pagination 原生属性        | `Record<string, any>`                 | `{}`                                         |
+### ColumnProps 配置
+
+`ColumnProps` 包含了 `ElTableColumn` 中除 `children`、`renderCell`、`renderHeader`、`type` 外所有的属性，参考 [Table-column 属性](https://element-plus.org/zh-CN/component/table.html#table-column-%E5%B1%9E%E6%80%A7)。
+
+#### 基础配置
+
+| 参数                  | 说明             | 类型                                                | 默认值   |
+| --------------------- | ---------------- | --------------------------------------------------- | -------- |
+| `isShow`              | 是否显示列       | `boolean`                                           | `true`   |
+| `search`              | 搜索配置         | [`SearchProps`](#搜索配置-searchprops)              | -        |
+
+#### 使用说明
+
+**1. 选择列**
+
+```typescript
+{ type: 'selection', width: 55, fixed: 'left' }
+```
+
+**2. 索引列**
+
+```typescript
+{ type: 'index', label: '序号', width: 60 }
+```
+
+**3. 正常列**
+
+```typescript
+{
+  label: '姓名',
+  prop: 'name', 
+  width: 180,
+}
+```
+
+**4. 操作列**
+
+```typescript
+{
+  label: '操作',
+  prop: 'operation',  // 必须设置为 'operation'
+  width: 180,
+  fixed: 'right'
+}
+```
+### data
+
+表格数据，优先级要高于request-api
+### requestApi
+
+数据源
+### requestAuto
+
+是否在组件加载后自动执行请求（request-api）
+### dataCallback
+
+返回数据的回调函数，可以对数据进行处理
+### RequestMapping
+
+用于映射请求参数的字段名：
+
+```typescript
+interface RequestMapping {
+  pageNo?: string // 页码字段名，默认 'pageNo'
+  pageSize?: string // 每页条数字段名，默认 'pageSize'
+}
+```
+
+**示例：**
+
+```typescript
+// 后端要求：{ page: 1, size: 10 }
+:request-mapping="{ pageNo: 'page', pageSize: 'size' }"
+```
 
 ### ResponseMapping
 
@@ -106,68 +179,8 @@ interface ResponseMapping {
 :response-mapping="{ list: 'result.records', total: 'result.count' }"
 ```
 
-### RequestMapping
-
-用于映射请求参数的字段名：
-
-```typescript
-interface RequestMapping {
-  pageNo?: string // 页码字段名，默认 'pageNo'
-  pageSize?: string // 每页条数字段名，默认 'pageSize'
-}
-```
-
-**示例：**
-
-```typescript
-// 后端要求：{ page: 1, size: 10 }
-:request-mapping="{ pageNo: 'page', pageSize: 'size' }"
-```
 
 ---
-
-## ColumnProps 配置
-
-### 基础配置
-
-| 参数                  | 说明             | 类型                                                | 默认值   |
-| --------------------- | ---------------- | --------------------------------------------------- | -------- |
-| `type`                | 列类型           | `'selection' \| 'index' \| 'expand' \| 'operation'` | -        |
-| `prop`                | 字段名           | `string`                                            | -        |
-| `label`               | 列标题           | `string`                                            | -        |
-| `width`               | 列宽度           | `string \| number`                                  | -        |
-| `minWidth`            | 最小列宽         | `string \| number`                                  | -        |
-| `fixed`               | 固定列           | `'left' \| 'right' \| boolean`                      | -        |
-| `align`               | 对齐方式         | `'left' \| 'center' \| 'right'`                     | `'left'` |
-| `sortable`            | 是否可排序       | `boolean \| 'custom'`                               | `false`  |
-| `showOverflowTooltip` | 超出显示 tooltip | `boolean`                                           | `true`   |
-| `isShow`              | 是否显示列       | `boolean`                                           | `true`   |
-| `search`              | 搜索配置         | [`SearchProps`](#搜索配置-searchprops)              | -        |
-
-### 特殊列类型
-
-#### 1. 选择列
-
-```typescript
-{ type: 'selection', width: 55, fixed: 'left' }
-```
-
-#### 2. 索引列
-
-```typescript
-{ type: 'index', label: '序号', width: 60 }
-```
-
-#### 3. 操作列
-
-```typescript
-{
-  label: '操作',
-  prop: 'operation',  // 必须设置为 'operation'
-  width: 180,
-  fixed: 'right'
-}
-```
 
 ---
 

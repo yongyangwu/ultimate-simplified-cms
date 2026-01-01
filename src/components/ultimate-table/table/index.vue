@@ -159,7 +159,7 @@
     </el-table>
     <!-- 分页组件 -->
     <el-pagination
-      v-if="mergedPaginationProps"
+      v-if="showPagination"
       v-bind="mergedPaginationProps"
       style="margin-top: 16px; justify-content: flex-end"
       @size-change="handleSizeChange"
@@ -183,7 +183,7 @@
     columns: ColumnProps[] // 列配置
     data?: any[] // 表格数据
     loading?: boolean // 加载状态
-    paginationProps?: Record<string, any> // Element Plus Pagination 原生属性
+    paginationProps?: Record<string, any> | false // Element Plus Pagination 原生属性，传 false 隐藏分页
     total?: number // 总条数
     pageSize?: number // 每页显示条数
     currentPage?: number // 当前页码
@@ -320,15 +320,13 @@
     }
   )
 
+  // 是否显示分页
+  const showPagination = computed(() => {
+    return props.paginationProps !== false
+  })
+
   // 合并分页配置：内部默认值 + 用户传入的配置
   const mergedPaginationProps = computed(() => {
-    if (
-      !props.paginationProps ||
-      Object.keys(props.paginationProps).length === 0
-    ) {
-      return null
-    }
-
     return {
       total: internalTotal.value,
       pageSize: internalPageSize.value,
@@ -336,7 +334,9 @@
       pageSizes: [10, 20, 50, 100],
       layout: 'total, sizes, prev, pager, next, jumper',
       background: true,
-      ...props.paginationProps, // 用户传入的配置会覆盖默认值
+      ...(typeof props.paginationProps === 'object'
+        ? props.paginationProps
+        : {}), // 用户传入的配置会覆盖默认值
     }
   })
 

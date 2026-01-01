@@ -3,3 +3,5 @@ dist
 .DS_Store
 *.log
 pnpm-lock.yaml
+# 忽略所有 Markdown 文件
+*.md

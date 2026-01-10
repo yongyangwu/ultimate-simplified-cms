@@ -9,9 +9,20 @@
           v-bind="item && getResponsiveSpan(item)"
         >
           <el-form-item v-if="item" :label="item.label" :prop="item.prop">
+            <!-- 自定义渲染 -->
             <component
+              v-if="item.search?.render"
+              :is="
+                item.search.render({
+                  searchParam: props.searchParam,
+                  item: item,
+                })
+              "
+            />
+            <!-- 默认渲染 -->
+            <component
+              v-else-if="item.prop && (item.search?.el || item.search)"
               :is="getAsyncComponent(item.search?.el)"
-              v-if="item.prop && (item.search?.el || item.search)"
               v-model.trim="props.searchParam[item.search?.key || item.prop]"
               v-bind="{ ...item.search?.props, ...item.search?.elProps }"
               @change="handleFieldChange(item)"
@@ -177,7 +188,9 @@
   const searchColumns = computed(() => {
     return (
       props.columns
-        ?.filter((item) => item.search?.el)
+        ?.filter(
+          (item) => item.search && (item.search.el || item.search.render)
+        )
         .sort((a, b) => a.search!.order! - b.search!.order!) ?? []
     )
   })

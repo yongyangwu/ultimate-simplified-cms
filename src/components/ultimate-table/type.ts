@@ -1,5 +1,6 @@
 import type { TableColumnCtx } from "element-plus/es/components/table/src/table-column/defaults";
 import type { DefaultRow } from "element-plus/es/components/table/src/table/defaults";
+import type { VNodeChild } from "vue";
 
 export interface UltimateTableProps {
     columns?: ColumnProps[] // 列配置
@@ -25,11 +26,18 @@ export interface RequestMapping {
     pageNo?: string;   // 页码字段名，默认 'pageNo'
     pageSize?: string; // 每页条数字段名，默认 'pageSize'
 }
+export type RenderScope<T extends DefaultRow = any> = {
+    row: T;
+    $index: number;
+    column: TableColumnCtx<T>;
+    [key: string]: any;
+};
 
 export interface ColumnProps<T extends DefaultRow = any>
     extends Partial<Omit<TableColumnCtx<T>, "children" | "renderCell" | "renderHeader">> {
     isShow?: boolean; // 是否显示在表格当中（默认为 true）
     search?: SearchProps; // 搜索项配置
+    render?: (scope: RenderScope<T>) => VNodeChild; // 自定义单元格内容渲染（tsx语法）
 }
 // 响应式断点类型
 export type BreakPoint = "xs" | "sm" | "md" | "lg" | "xl";
@@ -45,6 +53,7 @@ export type SearchProps = {
     defaultValue?: any; // 搜索项默认值
     span?: number | Partial<Record<BreakPoint, number>>; // 栅格占据的列数，支持响应式配置 { xs: 24, sm: 12, md: 8, lg: 6, xl: 6 }
     elProps?: Record<string, any>; // Element Plus 原生组件属性，会透传给对应的表单组件（如 el-input、el-select 等）
+    render?: (scope: { searchParam: Record<string, any>; item: ColumnProps }) => VNodeChild; // 自定义搜索内容渲染（tsx语法）
 };
 export type SearchType =
     | "el-input" // 文本框

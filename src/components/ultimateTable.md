@@ -121,7 +121,23 @@
 }
 ```
 
-**4. 操作列**
+**4. 自定义渲染列（使用 render 函数）**
+
+```typescript
+{
+  label: '状态',
+  prop: 'status',
+  render: ({ row }) => {
+    return (
+      <el-tag type={row.status === 1 ? 'success' : 'danger'}>
+        {row.status === 1 ? '启用' : '禁用'}
+      </el-tag>
+    )
+  }
+}
+```
+
+**5. 操作列**
 
 ```typescript
 {

@@ -44,7 +44,7 @@
     </template>
   </ultimate-table>
 </template>
-<script setup lang="ts">
+<script setup lang="tsx">
   import { reactive } from 'vue'
   import { Upload, Printer } from '@element-plus/icons-vue'
   import UltimateTable from '@/components/ultimate-table/index.vue'
@@ -114,11 +114,18 @@
     {
       label: '姓名',
       prop: 'name',
+      render: (row) => {},
       search: {
-        el: 'el-input',
         order: 1,
-        elProps: {
-          placeholder: '请输入姓名',
+        render: ({ searchParam }) => {
+          return (
+            <el-input
+              v-model={searchParam.name}
+              placeholder="请输入姓名"
+              clearable
+              style={{ width: '100%' }}
+            />
+          )
         },
       },
     },

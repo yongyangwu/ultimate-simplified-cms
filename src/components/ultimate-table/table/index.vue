@@ -137,9 +137,14 @@
           :show-overflow-tooltip="column.showOverflowTooltip ?? true"
         >
           <template #default="scope">
+            <!-- 自定义 render 函数渲染 -->
+            <component
+              v-if="column.render"
+              :is="column.render({ row: scope.row, $index: scope.$index, column: scope.column })"
+            />
             <!-- 自定义插槽 -->
             <slot
-              v-if="column.prop"
+              v-else-if="column.prop"
               :name="column.prop"
               :row="scope.row"
               :$index="scope.$index"

@@ -26,7 +26,7 @@ const router = createRouter({
 /**
  * @description 路由拦截 beforeEach
  * */
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (_to, _from, next) => {
     await initDynamicRouter();
     next();
 });

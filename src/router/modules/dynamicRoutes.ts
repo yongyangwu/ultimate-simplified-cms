@@ -1,6 +1,5 @@
 import router from "@/router/index";
 import type { RouteRecordRaw } from "vue-router";
-import mockMenuData from '@/api/menu.json'
 import { getMenuApi } from "@/api/modules/system";
 
 // 引入 views 文件夹下所有 vue 文件

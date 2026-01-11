@@ -26,6 +26,7 @@
               v-model.trim="props.searchParam[item.search?.key || item.prop]"
               v-bind="{ ...item.search?.props, ...item.search?.elProps }"
               :placeholder="getPlaceholder(item)"
+              :disabled="getDisabled(item)"
               @change="handleFieldChange(item)"
               style="width: 100%"
             >
@@ -321,9 +322,18 @@
   // 存储字段加载状态
   const fieldLoadingMap = reactive(new Map<string, boolean>())
 
+  const isLinkageLoading = (item: ColumnProps) => {
+    const linkage = item.search?.linkage
+    if (!linkage || linkage.length === 0) return false
+    return linkage.some((linkProp) => fieldLoadingMap.get(linkProp))
+  }
+
   // 获取 placeholder
   const getPlaceholder = (item: ColumnProps) => {
-    if (item.prop && fieldLoadingMap.get(item.prop)) {
+    if (
+      (item.prop && fieldLoadingMap.get(item.prop)) ||
+      isLinkageLoading(item)
+    ) {
       return '加载中...'
     }
     return (
@@ -331,6 +341,34 @@
       item.search?.elProps?.placeholder ||
       '请选择'
     )
+  }
+
+  const getDisabled = (item: ColumnProps) => {
+    const userDisabled =
+      item.search?.props?.disabled ?? item.search?.elProps?.disabled
+
+    if (userDisabled === true) return true
+
+    const el = item.search?.el
+    const shouldDisableDuringLoading =
+      el === 'el-select' ||
+      el === 'el-select-v2' ||
+      el === 'el-tree-select' ||
+      el === 'el-cascader'
+
+    const loading =
+      (item.prop && fieldLoadingMap.get(item.prop)) || isLinkageLoading(item)
+
+    if (
+      shouldDisableDuringLoading &&
+      item.prop &&
+      (item.search?.optionsApi || item.search?.linkage) &&
+      loading
+    ) {
+      return true
+    }
+
+    return false
   }
 
   // 获取选项数据（支持静态和异步）

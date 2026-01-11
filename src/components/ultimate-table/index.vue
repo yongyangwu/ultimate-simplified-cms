@@ -76,7 +76,6 @@
   props.columns.forEach((item) => {
     if (item.search && item.prop) {
       const key = item.search?.key || item.prop
-
       // 如果有 optionsApi，暂不设置 defaultValue，等选项加载完成后再设置
       if (item.search.optionsApi) {
         searchParam[key] = ''
@@ -153,7 +152,7 @@
 
       console.log('params-----', params)
       const result = await props.requestApi(params)
-      console.log('result----', result)
+      // console.log('result----', result)
       // 如果有数据处理回调，使用回调处理数据
       let processedData = result
       if (props.dataCallback) {

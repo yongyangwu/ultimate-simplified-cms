@@ -25,6 +25,7 @@
               :is="getAsyncComponent(item.search?.el)"
               v-model.trim="props.searchParam[item.search?.key || item.prop]"
               v-bind="{ ...item.search?.props, ...item.search?.elProps }"
+              :placeholder="getPlaceholder(item)"
               @change="handleFieldChange(item)"
               style="width: 100%"
             >
@@ -42,7 +43,6 @@
             </component>
           </el-form-item>
         </el-col>
-
         <!-- 操作按钮 - 智能定位到最右边 -->
         <el-col v-bind="buttonResponsiveSpan" :offset="buttonColOffset">
           <el-form-item label-width="0">
@@ -114,9 +114,6 @@
   // 折叠状态
   const collapsed = ref(true)
 
-  // 当前屏幕断点
-  const breakpoint = ref<BreakPoint>('xl')
-
   // 响应式断点配置
   const breakpoints: Record<BreakPoint, number> = {
     xs: 0, // <768px
@@ -134,6 +131,11 @@
     if (width < breakpoints.xl) return 'lg'
     return 'xl'
   }
+
+  // 当前屏幕断点
+  const breakpoint = ref<BreakPoint>(
+    typeof window !== 'undefined' ? getBreakpoint(window.innerWidth) : 'xl'
+  )
 
   // 监听窗口大小变化
   const handleResize = () => {
@@ -158,7 +160,6 @@
         xl: span,
       }
     }
-
     // 如果是响应式对象，直接返回
     return span
   }
@@ -169,10 +170,8 @@
     const responsiveSpan = getResponsiveSpan(item) as Partial<
       Record<BreakPoint, number>
     >
-
     const breakpointOrder: BreakPoint[] = ['xs', 'sm', 'md', 'lg', 'xl']
     const currentIndex = breakpointOrder.indexOf(breakpoint.value)
-
     // 从当前断点向下查找最近的配置值
     for (let i = currentIndex; i >= 0; i--) {
       const bp = breakpointOrder[i]
@@ -180,34 +179,37 @@
         return responsiveSpan[bp] as number
       }
     }
-
     // 如果没有找到，返回默认值 (理论上不会走到这里，因为 getResponsiveSpan 都有默认值)
     return 6
   }
 
+  // 过滤并排序搜索列
   const searchColumns = computed(() => {
     return (
       props.columns
+        // 过滤掉没有配置 search 或 search.el/render 的列
         ?.filter(
           (item) => item.search && (item.search.el || item.search.render)
         )
-        .sort((a, b) => a.search!.order! - b.search!.order!) ?? []
+        // 根据 order 字段进行排序，order 越小越靠前，没有 order 的排在最后
+        .sort((a, b) => {
+          const orderA = a.search?.order ?? Infinity
+          const orderB = b.search?.order ?? Infinity
+          return orderA - orderB
+        }) ?? []
     )
   })
-
   // 计算显示的搜索列（根据折叠状态）
   const displayedSearchColumns = computed(() => {
     if (!collapsed.value || !showCollapseButton.value) {
       // 展开状态或不需要折叠时，显示所有列
       return searchColumns.value
     }
-
     // 折叠状态：只显示第一行能放下的搜索项（需要为按钮预留空间）
     const columns = searchColumns.value
     const buttonSpan = getButtonSpan()
     let totalSpan = 0
     const firstRowColumns: ColumnProps[] = []
-
     // 小屏幕特殊处理：每个元素都是独占一行的，至少显示第一个搜索项
     if (breakpoint.value === 'xs') {
       return columns.length > 0 ? [columns[0]] : []
@@ -223,7 +225,6 @@
         break
       }
     }
-
     return firstRowColumns
   })
 
@@ -259,7 +260,7 @@
     if (breakpoint.value === 'xs') {
       return columns.length > 1
     }
-
+    console.log('columns', columns)
     // 计算所有搜索项占用的总列数
     const totalSpan = columns.reduce((sum, item) => {
       return sum + getItemSpan(item)
@@ -317,6 +318,21 @@
     Map<string, Array<{ label: string; value: string | number }>>
   >(new Map())
 
+  // 存储字段加载状态
+  const fieldLoadingMap = reactive(new Map<string, boolean>())
+
+  // 获取 placeholder
+  const getPlaceholder = (item: ColumnProps) => {
+    if (item.prop && fieldLoadingMap.get(item.prop)) {
+      return '加载中...'
+    }
+    return (
+      item.search?.props?.placeholder ||
+      item.search?.elProps?.placeholder ||
+      '请选择'
+    )
+  }
+
   // 获取选项数据（支持静态和异步）
   const getOptions = (item: ColumnProps) => {
     const prop = item.prop
@@ -341,22 +357,44 @@
     params?: Record<string, any>
   ) => {
     if (!item.search?.optionsApi || !item.prop) return
-
+    // 设置加载状态
+    fieldLoadingMap.set(item.prop, true)
     try {
       const options = await item.search.optionsApi(params)
       asyncOptionsMap.set(item.prop, options)
+
+      // 数据加载完成后，如果有默认值，立即设置
+      const key = item.search.key || item.prop
+      if (
+        item.search.defaultValue !== undefined &&
+        (props.searchParam[key] === undefined || props.searchParam[key] === '')
+      ) {
+        props.searchParam[key] = item.search.defaultValue
+      }
     } catch (error) {
       console.error(`加载选项失败 [${item.prop}]:`, error)
       asyncOptionsMap.set(item.prop, [])
+    } finally {
+      // 清除加载状态
+      fieldLoadingMap.set(item.prop, false)
     }
   }
 
   // 加载所有异步选项数据
   const loadAsyncOptions = async () => {
     const promises = searchColumns.value
+      // 筛选出需要初始化加载数据的字段
       .filter(
-        (item) => item.search?.optionsApi && item.prop && !item.search?.linkage
-      )
+        (item) =>
+          // 1. 必须配置了 optionsApi（说明这是一个需要异步获取数据的字段）
+          item.search?.optionsApi &&
+          // 2. 必须有 prop 属性（作为数据存储的唯一标识 key）
+          item.prop &&
+          // 3. 必须没有配置 linkage（说明它不依赖其他字段，是独立的）
+          // 【关键点】：如果有 linkage（联动依赖），那么它不能在这里初始化加载，
+          // 而应该等待它依赖的字段有值后，由 checkAndLoadLinkageOptions 触发加载。
+          !item.search?.linkage
+      ) // 4. 使用 .map() 将筛选出的每一列转换为一个异步任务
       .map(async (item) => loadFieldOptions(item))
 
     await Promise.all(promises)
@@ -463,7 +501,6 @@
     })
     emit('reset')
   }
-
   // 组件缓存，避免重复创建异步组件
   const componentCache = new Map<string, Component>()
   // 动态加载组件（按需加载）

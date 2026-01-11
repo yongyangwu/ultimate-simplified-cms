@@ -53,7 +53,7 @@
 
   // 模拟异步获取省份列表的 API
   const fetchProvinces = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     return [
       { label: '广东省', value: 1 },
       { label: '浙江省', value: 2 },
@@ -64,7 +64,7 @@
   // 模拟异步获取城市列表的 API（根据省份）
   const fetchCities = async (params?: Record<string, any>) => {
     // console.log('加载城市，省份参数：', params)
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // 根据不同省份返回不同的城市
     const cityMap: Record<number, Array<{ label: string; value: number }>> = {
@@ -88,10 +88,9 @@
     const provinceId = params?.province
     return cityMap[provinceId as number] || []
   }
-
   // 模拟异步获取部门列表的 API
   const fetchDepartments = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 6000))
     return [
       { label: '技术部', value: 1 },
       { label: '市场部', value: 2 },
@@ -99,7 +98,6 @@
       { label: '财务部', value: 4 },
     ]
   }
-
   const columns = reactive<ColumnProps[]>([
     {
       type: 'selection',
@@ -111,78 +109,76 @@
       label: '序号',
       width: 60,
     },
-    {
-      label: '姓名',
-      prop: 'name',
-      render: (row) => {},
-      search: {
-        order: 1,
-        render: ({ searchParam }) => {
-          return (
-            <el-input
-              v-model={searchParam.name}
-              placeholder="请输入姓名"
-              clearable
-              style={{ width: '100%' }}
-            />
-          )
-        },
-      },
-    },
-    {
-      label: '邮箱',
-      prop: 'email',
-      minWidth: 200,
-      search: {
-        el: 'el-input',
-        order: 1,
-        elProps: {
-          placeholder: '请输入邮箱',
-        },
-      },
-    },
-    {
-      label: '手机',
-      prop: 'phone',
-      minWidth: 200,
-      search: {
-        el: 'el-input',
-        order: 1,
-        elProps: {
-          placeholder: '请输入手机号',
-        },
-      },
-    },
-
-    {
-      label: '性别',
-      prop: 'gender',
-      search: {
-        el: 'el-select',
-        order: 2,
-        options: [
-          { label: '男', value: 1 },
-          { label: '女', value: 2 },
-        ],
-        elProps: {
-          placeholder: '请选择性别',
-          clearable: true,
-        },
-      },
-    },
+    // {
+    //   label: '姓名',
+    //   prop: 'name',
+    //   search: {
+    //     order: 1,
+    //     render: ({ searchParam }) => {
+    //       return (
+    //         <el-input
+    //           v-model={searchParam.name}
+    //           placeholder="请输入姓名"
+    //           clearable
+    //           style={{ width: '100%' }}
+    //         />
+    //       )
+    //     },
+    //   },
+    // },
+    // {
+    //   label: '邮箱',
+    //   prop: 'email',
+    //   minWidth: 200,
+    //   search: {
+    //     el: 'el-input',
+    //     order: 2,
+    //     elProps: {
+    //       placeholder: '请输入邮箱',
+    //     },
+    //   },
+    // },
+    // {
+    //   label: '手机',
+    //   prop: 'phone',
+    //   minWidth: 200,
+    //   search: {
+    //     el: 'el-input',
+    //     // order: 3,
+    //     elProps: {
+    //       placeholder: '请输入手机号',
+    //     },
+    //   },
+    // },
+    // {
+    //   label: '性别',
+    //   prop: 'gender',
+    //   search: {
+    //     el: 'el-select',
+    //     // order: 4,
+    //     options: [
+    //       { label: '男', value: 1 },
+    //       { label: '女', value: 2 },
+    //     ],
+    //     elProps: {
+    //       placeholder: '请选择性别',
+    //       clearable: true,
+    //     },
+    //   },
+    // },
     {
       label: '省份',
       prop: 'province',
       search: {
         el: 'el-select',
 
-        order: 3,
+        order: 5,
         // 通过 API 异步获取选项
         optionsApi: fetchProvinces,
         defaultValue: 1,
         elProps: {
           placeholder: '请选择省份',
-          disabled: true,
+          // disabled: true,
         },
       },
     },
@@ -191,7 +187,7 @@
       prop: 'city',
       search: {
         el: 'el-select',
-        order: 4,
+        order: 6,
         // 通过 API 异步获取选项（依赖省份）
         optionsApi: fetchCities,
         // 联动配置：依赖 province 字段
@@ -206,11 +202,12 @@
       prop: 'department',
       search: {
         el: 'el-select',
-        order: 5,
+        order: 7,
         // 通过 API 异步获取选项（独立）
         optionsApi: fetchDepartments,
         elProps: {
           placeholder: '请选择部门',
+          multiple: true,
         },
       },
     },

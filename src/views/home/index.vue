@@ -1,6 +1,10 @@
 <template>
   <!-- <div>home</div> -->
+  <div style="display: flex; justify-content: flex-end; margin-bottom: 12px">
+    <el-button type="primary" @click="handleRefresh">手动刷新</el-button>
+  </div>
   <ultimate-table
+    ref="tableRef"
     :columns="columns"
     :request-api="getUserListApi"
     @add="handleAdd"
@@ -21,7 +25,6 @@
         打印
       </el-button>
     </template>
-
     <!-- 操作列插槽 -->
     <template #operation="{ row, $index }">
       <el-button type="primary" link size="small">查看</el-button>
@@ -45,12 +48,12 @@
   </ultimate-table>
 </template>
 <script setup lang="tsx">
-  import { reactive } from 'vue'
+  import { reactive, ref } from 'vue'
   import { Upload, Printer } from '@element-plus/icons-vue'
   import UltimateTable from '@/components/ultimate-table/index.vue'
   import type { ColumnProps } from '@/components/ultimate-table/type'
   import { getUserListApi } from '@/api/modules/system/index'
-
+  const tableRef = ref<InstanceType<typeof UltimateTable> | null>(null)
   // 模拟异步获取省份列表的 API
   const fetchProvinces = async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -60,12 +63,10 @@
       { label: '江苏省', value: 3 },
     ]
   }
-
   // 模拟异步获取城市列表的 API（根据省份）
   const fetchCities = async (params?: Record<string, any>) => {
     // console.log('加载城市，省份参数：', params)
     await new Promise((resolve) => setTimeout(resolve, 1000))
-
     // 根据不同省份返回不同的城市
     const cityMap: Record<number, Array<{ label: string; value: number }>> = {
       1: [
@@ -150,22 +151,22 @@
     //     },
     //   },
     // },
-    // {
-    //   label: '性别',
-    //   prop: 'gender',
-    //   search: {
-    //     el: 'el-select',
-    //     // order: 4,
-    //     options: [
-    //       { label: '男', value: 1 },
-    //       { label: '女', value: 2 },
-    //     ],
-    //     elProps: {
-    //       placeholder: '请选择性别',
-    //       clearable: true,
-    //     },
-    //   },
-    // },
+    {
+      label: '性别',
+      prop: 'gender',
+      search: {
+        el: 'el-select',
+        // order: 4,
+        options: [
+          { label: '男', value: 1 },
+          { label: '女', value: 2 },
+        ],
+        elProps: {
+          placeholder: '请选择性别',
+          clearable: true,
+        },
+      },
+    },
     {
       label: '省份',
       prop: 'province',
@@ -257,5 +258,9 @@
   // 处理删除
   const handleDelete = (row: any, index: number) => {
     console.log('删除第', index, '行数据：', row)
+  }
+
+  const handleRefresh = () => {
+    tableRef.value?.getTableData({ www: 'www' })
   }
 </script>

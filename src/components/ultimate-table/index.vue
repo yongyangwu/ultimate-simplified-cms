@@ -117,8 +117,8 @@
     return result
   }
 
-  // 获取表格数据
-  const getTableData = async () => {
+  // 获取表格数据（支持外部额外查询参数）
+  const getTableData = async (extraParams?: Record<string, any>) => {
     // 如果传了静态数据，直接使用
     if (props.data) {
       tableData.value = props.data
@@ -130,12 +130,13 @@
     }
     try {
       loading.value = true
-      // 合并参数：初始化参数 + 搜索参数 + 分页参数
+      // 合并参数：初始化参数 + 额外参数 + 搜索参数 + 分页参数
       const rawParams = {
         ...props.initParam,
         ...searchParam,
         [props.requestMapping?.pageNo || 'pageNo']: currentPage.value,
         [props.requestMapping?.pageSize || 'pageSize']: pageSize.value,
+        ...(extraParams || {}),
       }
 
       // 剔除空值参数（null、undefined、空字符串）

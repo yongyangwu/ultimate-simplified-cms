@@ -71,6 +71,7 @@
   const pageSize = ref(10)
   const currentPage = ref(1)
   const searchParam = reactive<Record<string, any>>({})
+  const isFirstRequest = ref(true)
 
   // 初始化搜索参数（区分静态和异步）
   props.columns.forEach((item) => {
@@ -118,7 +119,7 @@
   }
 
   // 获取表格数据（支持外部额外查询参数）
-  const getTableData = async (extraParams?: Record<string, any>) => {
+  const getTableData = async () => {
     // 如果传了静态数据，直接使用
     if (props.data) {
       tableData.value = props.data
@@ -130,13 +131,33 @@
     }
     try {
       loading.value = true
-      // 合并参数：初始化参数 + 额外参数 + 搜索参数 + 分页参数
+      // 合并参数：初始化参数 + 搜索参数 + 分页参数
+      const mergedSearchParam: Record<string, any> = { ...searchParam }
+
+      if (isFirstRequest.value) {
+        props.columns.forEach((item) => {
+          if (item.search && item.prop) {
+            const key = item.search?.key || item.prop
+            const hasOptionsApi = !!item.search.optionsApi
+            const defaultValue = item.search.defaultValue
+            const currentValue = mergedSearchParam[key]
+
+            if (
+              hasOptionsApi &&
+              defaultValue !== undefined &&
+              (currentValue === undefined || currentValue === '')
+            ) {
+              mergedSearchParam[key] = defaultValue
+            }
+          }
+        })
+      }
+
       const rawParams = {
         ...props.initParam,
-        ...searchParam,
+        ...mergedSearchParam,
         [props.requestMapping?.pageNo || 'pageNo']: currentPage.value,
         [props.requestMapping?.pageSize || 'pageSize']: pageSize.value,
-        ...(extraParams || {}),
       }
 
       // 剔除空值参数（null、undefined、空字符串）
@@ -153,13 +174,11 @@
 
       console.log('params-----', params)
       const result = await props.requestApi(params)
-      // console.log('result----', result)
       // 如果有数据处理回调，使用回调处理数据
       let processedData = result
       if (props.dataCallback) {
         processedData = props.dataCallback(result)
       }
-
       // 使用配置的字段映射获取数据
       const listData = getValueByPath(
         processedData,
@@ -169,7 +188,6 @@
         processedData,
         props.responseMapping?.total || 'total'
       )
-
       tableData.value = Array.isArray(listData) ? listData : []
       total.value = typeof totalCount === 'number' ? totalCount : 0
     } catch (error) {
@@ -178,6 +196,7 @@
       total.value = 0
     } finally {
       loading.value = false
+      isFirstRequest.value = false
     }
   }
 

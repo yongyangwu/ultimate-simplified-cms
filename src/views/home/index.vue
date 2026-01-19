@@ -154,6 +154,16 @@
     {
       label: '性别',
       prop: 'gender',
+      render: ({ row }) => {
+        console.log('性别渲染', row)
+
+        // return row.gender === 1 ? '男' : '女'
+        return (
+          <el-tag type={row.gender === 1 ? 'success' : 'danger'}>
+            {row.gender === 1 ? '男' : '女'}
+          </el-tag>
+        )
+      },
       search: {
         el: 'el-select',
         // order: 4,
@@ -261,6 +271,6 @@
   }
 
   const handleRefresh = () => {
-    tableRef.value?.getTableData({ www: 'www' })
+    tableRef.value?.getTableData()
   }
 </script>

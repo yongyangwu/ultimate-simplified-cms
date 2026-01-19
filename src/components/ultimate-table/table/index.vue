@@ -137,20 +137,25 @@
           :show-overflow-tooltip="column.showOverflowTooltip ?? true"
         >
           <template #default="scope">
-            <!-- 自定义 render 函数渲染 -->
-            <component
-              v-if="column.render"
-              :is="column.render({ row: scope.row, $index: scope.$index, column: scope.column })"
-            />
-            <!-- 自定义插槽 -->
-            <slot
-              v-else-if="column.prop"
-              :name="column.prop"
-              :row="scope.row"
-              :$index="scope.$index"
-            >
-              {{ scope.row[column.prop!] }}
-            </slot>
+            <template v-if="column.render">
+              <component
+                v-if="isVNodeResult(getRenderResult(column, scope))"
+                :is="getRenderResult(column, scope)"
+              />
+              <span v-else>
+                {{ getRenderResult(column, scope) }}
+              </span>
+            </template>
+            <template v-else>
+              <slot
+                v-if="column.prop"
+                :name="column.prop"
+                :row="scope.row"
+                :$index="scope.$index"
+              >
+                {{ scope.row[column.prop!] }}
+              </slot>
+            </template>
           </template>
         </el-table-column>
       </template>
@@ -174,7 +179,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, reactive } from 'vue'
+  import { ref, computed, watch, reactive, isVNode } from 'vue'
   import {
     Operation,
     Plus,
@@ -255,6 +260,19 @@
       return true
     })
   })
+
+  const getRenderResult = (column: ColumnProps, scope: any) => {
+    if (!column.render) return null
+    return column.render({
+      row: scope.row,
+      $index: scope.$index,
+      column: scope.column,
+    })
+  }
+
+  const isVNodeResult = (result: any) => {
+    return isVNode(result)
+  }
 
   // 处理列显示状态变化
   const handleColumnVisibleChange = () => {

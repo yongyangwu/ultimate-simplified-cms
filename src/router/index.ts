@@ -1,5 +1,5 @@
-import { createRouter, createWebHashHistory } from "vue-router";
-import { staticRoutes } from "@/router/modules/staticRoutes";
+import { createRouter, createWebHashHistory } from 'vue-router'
+import { staticRoutes } from '@/router/modules/staticRoutes'
 import { initDynamicRouter } from '@/router/modules/dynamicRoutes'
 /**
  * @description 📚 路由参数配置简介
@@ -21,26 +21,25 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes: [...staticRoutes],
     strict: false,
-    scrollBehavior: () => ({ left: 0, top: 0 })
-});
+    scrollBehavior: () => ({ left: 0, top: 0 }),
+})
 /**
  * @description 路由拦截 beforeEach
  * */
 router.beforeEach(async (_to, _from, next) => {
-    await initDynamicRouter();
-    next();
-});
-router.onError(error => {
+    await initDynamicRouter()
+    next()
+})
+router.onError((error) => {
     //   NProgress.done();
-    console.warn("路由错误", error.message);
-});
+    console.warn('路由错误', error.message)
+})
 
 /**
  * @description 路由跳转结束
  * */
 router.afterEach(() => {
     //   NProgress.done();
-});
+})
 
-
-export default router;
+export default router

@@ -27,7 +27,7 @@ export const staticRoutes = [
     {
         path: '/layout',
         name: 'layout',
-        redirect: '/home',
+        // redirect: '/home',
         component: Layout, // 容器布局-顶层路由
         // 二级路由-主要渲染页面
         children: [],

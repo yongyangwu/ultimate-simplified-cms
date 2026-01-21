@@ -10,8 +10,14 @@ export const useGlobalStore = defineStore('ultimate-global', {
         language: null,
         // 折叠菜单
         isCollapse: false,
+        // 路由是否已加载
+        isRoutesLoaded: false,
     }),
     getters: {},
-    actions: {},
+    actions: {
+        setRoutesLoaded(isLoaded: boolean) {
+            this.isRoutesLoaded = isLoaded
+        },
+    },
     persist: piniaPersistConfig('ultimate-global'),
 })

@@ -23,12 +23,20 @@ const router = createRouter({
     strict: false,
     scrollBehavior: () => ({ left: 0, top: 0 }),
 })
+import { useGlobalStore } from '@/store/modules/global'
+
 /**
  * @description 路由拦截 beforeEach
  * */
-router.beforeEach(async (_to, _from, next) => {
-    await initDynamicRouter()
-    next()
+router.beforeEach(async (to, _from, next) => {
+    // const globalStore = useGlobalStore()
+    // console.log('globalStore', globalStore.isRoutesLoaded)
+
+    // 1. Check if routes are already added to avoid infinite loop
+    // if (!globalStore.isRoutesLoaded) {
+    // await initDynamicRouter()
+    // globalStore.setRoutesLoaded(true) // Mark routes as loaded
+    return next({ ...to, replace: true }) // Re-trigger navigation with new routes
 })
 router.onError((error) => {
     //   NProgress.done();

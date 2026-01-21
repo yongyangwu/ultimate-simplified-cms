@@ -12,7 +12,7 @@
 <script setup lang="ts">
   import Aside from '@/layout/components/Aside/index.vue'
   //   import Header from '@/layout/components/Header/index.vue'
-  //   import Main from '@/layout/components/Main/index.vue'
+  import Main from '@/layout/components/Main/index.vue'
   //   import Footer from '@/layout/components/Footer/index.vue'
   //   import { storeToRefs } from 'pinia'
   //   import { useThemeConfig } from '@/store/modules/theme-config'

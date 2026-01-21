@@ -1,4 +1,4 @@
-import { mockService } from '@/api'
+import request, { mockService } from '@/api'
 import menuData from '@/api/menu.json'
 import usersData from './users.json'
 

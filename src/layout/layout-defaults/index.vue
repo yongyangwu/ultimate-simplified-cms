@@ -3,7 +3,7 @@
     <Aside v-if="isPc" />
     <el-container class="layout-right">
       <!-- <Header /> -->
-      <!-- <Main /> -->
+      <Main />
       <!-- <Footer v-if="isFooter" /> -->
     </el-container>
   </el-container>

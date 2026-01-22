@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { staticRoutes } from '@/router/modules/staticRoutes'
 import { initDynamicRouter } from '@/router/modules/dynamicRoutes'
+import { authAuthStore } from '@/store/modules/auth'
 /**
  * @description 📚 路由参数配置简介
  * @param path ==> 路由菜单访问路径
@@ -23,20 +24,20 @@ const router = createRouter({
     strict: false,
     scrollBehavior: () => ({ left: 0, top: 0 }),
 })
-import { useGlobalStore } from '@/store/modules/global'
-
 /**
  * @description 路由拦截 beforeEach
  * */
 router.beforeEach(async (to, _from, next) => {
-    // const globalStore = useGlobalStore()
-    // console.log('globalStore', globalStore.isRoutesLoaded)
-
-    // 1. Check if routes are already added to avoid infinite loop
-    // if (!globalStore.isRoutesLoaded) {
-    // await initDynamicRouter()
-    // globalStore.setRoutesLoaded(true) // Mark routes as loaded
-    return next({ ...to, replace: true }) // Re-trigger navigation with new routes
+    const authStore = authAuthStore()
+    // 1.如果没有加载过动态路由
+    if (!authStore.authMenuListGet.length) {
+        // alert(88)
+        await initDynamicRouter()
+        return next({ ...to, replace: true })
+    }
+    // 2.正常访问
+    console.log('路由已加载，正常访问')
+    next()
 })
 router.onError((error) => {
     //   NProgress.done();

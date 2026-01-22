@@ -25,6 +25,9 @@ declare namespace Menu {
         svgIcon?: string
         sort?: number
         type?: number
+        isHide?: boolean
+        isFull?: boolean
+
     }
 }
 /* tabs菜单 */

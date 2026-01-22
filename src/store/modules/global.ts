@@ -11,13 +11,13 @@ export const useGlobalStore = defineStore('ultimate-global', {
         // 折叠菜单
         isCollapse: false,
         // 路由是否已加载
-        isRoutesLoaded: false,
     }),
     getters: {},
     actions: {
-        setRoutesLoaded(isLoaded: boolean) {
-            this.isRoutesLoaded = isLoaded
-        },
+        setGlobalState(...args: any) {
+            this.$patch({ [args[0]]: args[1] });
+        }
+
     },
     persist: piniaPersistConfig('ultimate-global'),
 })

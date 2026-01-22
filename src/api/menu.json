@@ -42,6 +42,34 @@
                         "isAffix": false,
                         "isKeepAlive": true
                     }
+                },
+                {
+                    "path": "/system/menuManage",
+                    "name": "menuManage",
+                    "component": "/system/menuManage/index",
+                    "meta": {
+                        "icon": "Menu",
+                        "title": "菜单管理",
+                        "isLink": "",
+                        "isHide": false,
+                        "isFull": false,
+                        "isAffix": false,
+                        "isKeepAlive": true
+                    }
+                },
+                {
+                    "path": "/system/dictManage",
+                    "name": "dictManage",
+                    "component": "/system/dictManage/index",
+                    "meta": {
+                        "icon": "Menu",
+                        "title": "字典管理",
+                        "isLink": "",
+                        "isHide": false,
+                        "isFull": false,
+                        "isAffix": false,
+                        "isKeepAlive": true
+                    }
                 }
             ]
         }

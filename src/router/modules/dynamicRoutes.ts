@@ -1,66 +1,46 @@
 import router from '@/router/index'
 import type { RouteRecordRaw } from 'vue-router'
-import { getMenuApi } from '@/api/modules/system'
+import { useUserStore } from "@/store/modules/user";
+import { authAuthStore } from "@/store/modules/auth";
+import { ElNotification } from "element-plus";
 // 引入 views 文件夹下所有 vue 文件
 const modules = import.meta.glob('@/views/**/*.vue')
-console.log('modules', modules)
-// 菜单项类型定义
-interface MenuItem {
-    path: string
-    name: string
-    component?: string
-    redirect?: string
-    meta: {
-        icon?: string
-        title: string
-        isLink?: string
-        isHide: boolean
-        isFull: boolean
-        isAffix: boolean
-        isKeepAlive: boolean
-        activeMenu?: string
-    }
-    children?: MenuItem[]
-}
-/**
- * @description 扁平化树形菜单数据
- * @param menuList 树形菜单数据
- * @returns 扁平化后的菜单数组
- */
-const flattenMenuList = (menuList: MenuItem[]): MenuItem[] => {
-    let newMenuList: MenuItem[] = JSON.parse(JSON.stringify(menuList))
-    const result = newMenuList.flatMap((item) => [
-        item,
-        ...(item.children ? flattenMenuList(item.children) : []),
-    ])
-    return result
-}
 /**
  * @description 初始化动态路由
  */
 export const initDynamicRouter = async () => {
+    const userStore = useUserStore();
+    const authStore = authAuthStore();
 
     try {
-
-        const menuList = await getMenuApi()
-        // console.log('动态路由初始化完成，共添加路由:', menuList)
-        // // 1. 扁平化树形菜单数据
-        const flatMenuList = flattenMenuList(menuList.data as MenuItem[])
-        // console.log('flatMenuList--', flatMenuList)
-
-        // 2. 遍历扁平化后的菜单数据，动态添加路由
-        // 3.添加动态路由
-        flatMenuList.forEach(item => {
-            item.children && delete item.children;
-            if (item.component && typeof item.component == "string") {
-                item.component = modules["/src/views" + item.component + ".vue"];
+        // 1.获取菜单列表 && 按钮权限列表
+        await authStore.getAuthMenuList();
+        // await authStore.getAuthButtonList();
+        // 判断当前用户有没有菜单权限
+        if (!authStore.authMenuListGet.length) {
+            ElNotification({
+                title: "无权限访问",
+                message: "当前账号无任何菜单权限，请联系系统管理员！",
+                type: "warning",
+                duration: 3000
+            });
+            userStore.setToken("");
+            router.replace('/');
+            return Promise.reject("No permission");
+        }
+        console.log('authStore.authMenuListGet', authStore.authMenuListGet)
+        // 添加动态路由
+        authStore.flatMenuListGet.forEach((item) => {
+            item.children && delete item.children
+            if (item.component && typeof item.component == 'string') {
+                item.component = modules['/src/views' + item.component + '.vue']
             }
             if (item.meta.isFull) {
-                router.addRoute(item as unknown as RouteRecordRaw);
+                router.addRoute(item as unknown as RouteRecordRaw)
             } else {
-                router.addRoute("layout", item as unknown as RouteRecordRaw);
+                router.addRoute('layout', item as unknown as RouteRecordRaw)
             }
-        });
+        })
     } catch (error) {
         console.error('动态路由初始化失败:', error)
         // 可以在这里添加错误处理逻辑，比如跳转到错误页面

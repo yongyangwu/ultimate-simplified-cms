@@ -21,17 +21,18 @@ export const staticRoutes = [
         },
     },
     {
-        path: '/:pathMatch(.*)*',
-        component: () => import('@/views/404/index.vue'),
-    },
-    {
         path: '/layout',
         name: 'layout',
-        // redirect: '/home',
+        redirect: '/home',
         component: Layout, // 容器布局-顶层路由
         // 二级路由-主要渲染页面
         children: [],
     },
+    {
+        path: '/:pathMatch(.*)*',
+        component: () => import('@/views/404/index.vue'),
+    },
+
     /**
      * 提示：写在这里的为全屏界面，不建议写在这里非全屏界面，请写在 layout.children 路由数组中
      *

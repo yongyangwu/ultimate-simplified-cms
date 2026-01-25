@@ -9,25 +9,18 @@ declare namespace Menu {
         name: string
         redirect?: string
         component?: string | (() => Promise<unknown>)
-        meta: MetaType
+        meta: MetaProps
         children?: MenuOptions[] | null | any
     }
-    interface MetaType {
+    interface MetaProps {
+        icon: string
         title: string
-        hide: boolean
-        disable: boolean
-        keepAlive: boolean
-        affix: boolean
-        link?: string
-        iframe?: boolean
-        roles: Array<string>
-        icon?: string
-        svgIcon?: string
-        sort?: number
-        type?: number
-        isHide?: boolean
-        isFull?: boolean
-
+        activeMenu?: string
+        isLink?: string
+        isHide: boolean
+        isFull: boolean
+        isAffix: boolean
+        isKeepAlive: boolean
     }
 }
 /* tabs菜单 */

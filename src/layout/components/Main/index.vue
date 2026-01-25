@@ -1,4 +1,5 @@
 <template>
+  <Tabs v-show="tabs" />
   <el-main>
     <router-view v-slot="{ Component, route }">
       <transition appear name="fade-transform" mode="out-in">
@@ -15,12 +16,11 @@
 <script setup lang="ts">
   import { ref, onBeforeUnmount, provide, watch, h } from 'vue'
   import { storeToRefs } from 'pinia'
-  import { useDebounceFn } from '@vueuse/core'
+  // import { useDebounceFn } from '@vueuse/core'
   import { useGlobalStore } from '@/store/modules/global'
-
+  import Tabs from '@/layout/components/Tabs/index.vue'
   const globalStore = useGlobalStore()
-  //   const { isCollapse, layout } = storeToRefs(globalStore)
-
+  const { tabs } = storeToRefs(globalStore)
   // 注入刷新页面方法
   const isRouterShow = ref(true)
   const refreshCurrentPage = (val: boolean) => (isRouterShow.value = val)

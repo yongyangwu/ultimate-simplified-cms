@@ -12,11 +12,11 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useRoute } from 'vue-router'
-  import { authAuthStore } from '@/store/modules/auth'
+  import { useAuthStore } from '@/store/modules/auth'
   import { useGlobalStore } from '@/store/modules/global'
   import SubMenu from './subMenu.vue'
   const route = useRoute()
-  const authStore = authAuthStore()
+  const authStore = useAuthStore()
   const globalStore = useGlobalStore()
   const activeMenu = computed(() => {
     const { meta, path } = route

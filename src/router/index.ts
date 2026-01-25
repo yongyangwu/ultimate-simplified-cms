@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { staticRoutes } from '@/router/modules/staticRoutes'
 import { initDynamicRouter } from '@/router/modules/dynamicRoutes'
-import { authAuthStore } from '@/store/modules/auth'
+import { useAuthStore } from '@/store/modules/auth'
 /**
  * @description 📚 路由参数配置简介
  * @param path ==> 路由菜单访问路径
@@ -28,7 +28,7 @@ const router = createRouter({
  * @description 路由拦截 beforeEach
  * */
 router.beforeEach(async (to, _from, next) => {
-    const authStore = authAuthStore()
+    const authStore = useAuthStore()
     // 1.如果没有加载过动态路由
     if (!authStore.authMenuListGet.length) {
         // alert(88)

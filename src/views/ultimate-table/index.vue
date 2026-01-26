@@ -155,7 +155,7 @@
       label: '性别',
       prop: 'gender',
       render: ({ row }) => {
-        console.log('性别渲染', row)
+        // console.log('性别渲染', row)
 
         // return row.gender === 1 ? '男' : '女'
         return (

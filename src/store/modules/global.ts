@@ -10,14 +10,16 @@ export const useGlobalStore = defineStore('ultimate-global', {
         language: null,
         // 折叠菜单
         isCollapse: false,
-        // 路由是否已加载
+        // 标签页
+        tabs: true,
+        /// 标签页图标
+        tabsIcon: true,
     }),
     getters: {},
     actions: {
         setGlobalState(...args: any) {
-            this.$patch({ [args[0]]: args[1] });
-        }
-
+            this.$patch({ [args[0]]: args[1] })
+        },
     },
     persist: piniaPersistConfig('ultimate-global'),
 })

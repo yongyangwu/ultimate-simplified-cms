@@ -1,12 +1,17 @@
-
+const mode = import.meta.env.VITE_ROUTER_MODE
 /**
  * @description 使用递归扁平化菜单，方便添加动态路由
  * @param {Array} menuList 菜单列表
  * @returns {Array}
  */
-export function getFlatMenuList(menuList: Menu.MenuOptions[]): Menu.MenuOptions[] {
-    let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList));
-    return newMenuList.flatMap(item => [item, ...(item.children ? getFlatMenuList(item.children) : [])]);
+export function getFlatMenuList(
+    menuList: Menu.MenuOptions[]
+): Menu.MenuOptions[] {
+    let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList))
+    return newMenuList.flatMap((item) => [
+        item,
+        ...(item.children ? getFlatMenuList(item.children) : []),
+    ])
 }
 
 /**
@@ -15,16 +20,32 @@ export function getFlatMenuList(menuList: Menu.MenuOptions[]): Menu.MenuOptions[
  * @returns {Array}
  * */
 export function getShowMenuList(menuList: Menu.MenuOptions[]) {
-    let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList));
-    return newMenuList.filter(item => {
-        item.children?.length && (item.children = getShowMenuList(item.children));
-        return !item.meta?.isHide;
-    });
+    let newMenuList: Menu.MenuOptions[] = JSON.parse(JSON.stringify(menuList))
+    return newMenuList.filter((item) => {
+        item.children?.length && (item.children = getShowMenuList(item.children))
+        return !item.meta?.isHide
+    })
 }
-export const getAllBreadcrumbList = (menuList: Menu.MenuOptions[], parent = [], result: { [key: string]: any } = {}) => {
+export const getAllBreadcrumbList = (
+    menuList: Menu.MenuOptions[],
+    parent = [],
+    result: { [key: string]: any } = {}
+) => {
     for (const item of menuList) {
-        result[item.path] = [...parent, item];
-        if (item.children) getAllBreadcrumbList(item.children, result[item.path], result);
+        result[item.path] = [...parent, item]
+        if (item.children)
+            getAllBreadcrumbList(item.children, result[item.path], result)
     }
-    return result;
-};
+    return result
+}
+/**
+ * @description 获取不同路由模式所对应的 url + params
+ * @returns {String}
+ */
+export function getUrlWithParams() {
+    const url: { [key: string]: string } = {
+        hash: location.hash.substring(1),
+        history: location.pathname + location.search,
+    }
+    return url[mode]
+}

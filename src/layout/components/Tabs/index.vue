@@ -1,25 +1,29 @@
 <template>
-  <el-tabs
-    v-model="tabsMenuValue"
-    type="card"
-    @tab-click="tabClick"
-    @tab-remove="tabRemove"
-  >
-    <el-tab-pane
-      v-for="item in tabsMenuList"
-      :key="item.path"
-      :label="item.title"
-      :name="item.path"
-      :closable="item.close"
-    >
-      <template #label>
-        <el-icon v-if="item.icon && tabsIcon" class="tabs-icon">
-          <component :is="item.icon"></component>
-        </el-icon>
-        {{ item.title }}
-      </template>
-    </el-tab-pane>
-  </el-tabs>
+  <div class="tabs-box">
+    <div class="tabs-menu">
+      <el-tabs
+        v-model="tabsMenuValue"
+        type="card"
+        @tab-click="tabClick"
+        @tab-remove="tabRemove"
+      >
+        <el-tab-pane
+          v-for="item in tabsMenuList"
+          :key="item.path"
+          :label="item.title"
+          :name="item.path"
+          :closable="item.close"
+        >
+          <template #label>
+            <el-icon v-if="item.icon && tabsIcon" class="tabs-icon">
+              <component :is="item.icon"></component>
+            </el-icon>
+            {{ item.title }}
+          </template>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -37,7 +41,7 @@
   const tabStore = useTabsStore()
   const authStore = useAuthStore()
   const globalStore = useGlobalStore()
-  console.log('route.fullPath', route.fullPath)
+  // console.log('route.fullPath', route.fullPath)
 
   const tabsMenuValue = ref(route.fullPath)
   const tabsMenuList = computed(() => tabStore.tabsMenuList)
@@ -111,5 +115,5 @@
 </script>
 
 <style scoped lang="scss">
-  //   @import './index.scss';
+  @use './index.scss';
 </style>

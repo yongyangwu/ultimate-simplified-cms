@@ -27,7 +27,7 @@
   })
   const isCollapse = computed(() => globalStore.isCollapse)
   const menuList = computed(() => authStore.showMenuListGet)
-  console.log('menuList', menuList.value)
+  // console.log('menuList', menuList.value)
 </script>
 <style lang="scss" scoped>
   .el-menu {

@@ -4,7 +4,11 @@ import usersData from './users.json'
 
 // 获取菜单数据
 export const getMenuApi = () => {
-    return menuData
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(menuData)
+        }, 500)
+    })
     // return request({
     //     url: "/menu/list",
     //     method: "get"
@@ -22,6 +26,20 @@ export const getUserListApi = () => {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(usersData)
+        }, 1000)
+    })
+}
+
+// 保存菜单数据（模拟）
+export const saveMenuApi = (data: any) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            console.log('保存菜单数据:', data)
+            resolve({
+                code: 200,
+                message: '保存成功',
+                data: null
+            })
         }, 1000)
     })
 }

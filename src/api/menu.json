@@ -5,6 +5,7 @@
             "path": "/system",
             "name": "system",
             "redirect": "/system/accountManage",
+            "menuType": 1,
             "meta": {
                 "icon": "Tools",
                 "title": "系统管理",
@@ -14,11 +15,14 @@
                 "isAffix": false,
                 "isKeepAlive": true
             },
+            "id": 1,
+            "parentId": 0,
             "children": [
                 {
                     "path": "/system/accountManage",
                     "name": "accountManage",
                     "component": "/system/accountManage/index",
+                    "menuType": 2,
                     "meta": {
                         "icon": "Menu",
                         "title": "账号管理",
@@ -27,11 +31,14 @@
                         "isFull": false,
                         "isAffix": false,
                         "isKeepAlive": true
-                    }
+                    },
+                    "id": 2,
+                    "parentId": 1
                 },
                 {
                     "path": "/system/roleManage",
                     "name": "roleManage",
+                    "menuType": 2,
                     "component": "/system/roleManage/index",
                     "meta": {
                         "icon": "Menu",
@@ -41,11 +48,14 @@
                         "isFull": false,
                         "isAffix": false,
                         "isKeepAlive": true
-                    }
+                    },
+                    "id": 3,
+                    "parentId": 1
                 },
                 {
                     "path": "/system/menuManage",
                     "name": "menuManage",
+                    "menuType": 2,
                     "component": "/system/menuManage/index",
                     "meta": {
                         "icon": "Menu",
@@ -55,11 +65,14 @@
                         "isFull": false,
                         "isAffix": false,
                         "isKeepAlive": true
-                    }
+                    },
+                    "id": 4,
+                    "parentId": 1
                 },
                 {
                     "path": "/system/dictManage",
                     "name": "dictManage",
+                    "menuType": 2,
                     "component": "/system/dictManage/index",
                     "meta": {
                         "icon": "Menu",
@@ -69,7 +82,9 @@
                         "isFull": false,
                         "isAffix": false,
                         "isKeepAlive": true
-                    }
+                    },
+                    "id": 5,
+                    "parentId": 1
                 }
             ]
         }

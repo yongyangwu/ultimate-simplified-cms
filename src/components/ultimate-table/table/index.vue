@@ -70,6 +70,7 @@
       v-loading="props.loading"
       :data="tableData"
       style="width: 100%"
+      row-key="id"
       @selection-change="handleSelectionChange"
     >
       <!-- 动态渲染列 -->

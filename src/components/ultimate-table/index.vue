@@ -172,7 +172,7 @@
         {} as Record<string, any>
       )
 
-      console.log('params-----', params)
+      // console.log('params-----', params)
       const result = await props.requestApi(params)
       // 如果有数据处理回调，使用回调处理数据
       let processedData = result

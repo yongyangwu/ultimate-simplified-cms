@@ -36,7 +36,7 @@ router.beforeEach(async (to, _from, next) => {
         return next({ ...to, replace: true })
     }
     // 2.正常访问
-    console.log('路由已加载，正常访问')
+    // console.log('路由已加载，正常访问')
     next()
 })
 router.onError((error) => {

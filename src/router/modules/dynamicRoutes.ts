@@ -28,7 +28,7 @@ export const initDynamicRouter = async () => {
             router.replace('/')
             return Promise.reject('No permission')
         }
-        console.log('authStore.authMenuListGet', authStore.authMenuListGet)
+        // console.log('authStore.authMenuListGet', authStore.authMenuListGet)
         // 添加动态路由
         authStore.flatMenuListGet.forEach((item) => {
             item.children && delete item.children

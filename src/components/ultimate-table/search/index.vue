@@ -261,7 +261,7 @@
     if (breakpoint.value === 'xs') {
       return columns.length > 1
     }
-    console.log('columns', columns)
+    // console.log('columns', columns)
     // 计算所有搜索项占用的总列数
     const totalSpan = columns.reduce((sum, item) => {
       return sum + getItemSpan(item)

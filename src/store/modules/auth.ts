@@ -31,7 +31,7 @@ export const useAuthStore = defineStore('ultimate-auth', {
         // Get AuthMenuList
         async getAuthMenuList() {
             const result = await getMenuApi()
-            console.log('data---', result)
+            // console.log('data---', result)
             this.authMenuList = result.data
         },
         // Set RouteName

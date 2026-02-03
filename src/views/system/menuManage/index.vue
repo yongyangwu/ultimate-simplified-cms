@@ -6,10 +6,13 @@
       :request-api="getMenuApi"
       :responseMapping="{ list: 'data', total: 'total' }"
       :dataCallback="handleDataCallback"
+      :showToolButtonList="['add', 'export']"
       @add="handleAdd"
-      @batch-delete="handleBatchDelete"
       @export="handleExport"
     >
+      <template #tableHeaderExtra>
+        <el-button type="primary"> 批量删除 </el-button>
+      </template>
       <!-- 操作列插槽 -->
       <template #operation="{ row, $index }">
         <el-button
@@ -39,6 +42,7 @@
     </ultimate-table>
     <MenuForm
       ref="menuFormRef"
+      :key="menuFormKey"
       :form-config="formConfig"
       :form-rules="formRules"
       @submit="handleMenuSubmit"
@@ -46,23 +50,42 @@
   </div>
 </template>
 <script setup lang="tsx">
-  import { reactive, ref, defineAsyncComponent, computed } from 'vue'
-  import { Upload, Printer } from '@element-plus/icons-vue'
+  import { reactive, ref, defineAsyncComponent, computed, nextTick } from 'vue'
   import { ElMessage } from 'element-plus'
   import UltimateTable from '@/components/ultimate-table/index.vue'
   import type { ColumnProps } from '@/components/ultimate-table/type'
-  import { saveMenuApi, getMenuApi } from '@/api/modules/system/index'
+  import { getMenuApi, addMenuApi } from '@/api/modules/system/index'
   import { useAuthStore } from '@/store/modules/auth'
 
   const authStore = useAuthStore()
-  const MenuForm = defineAsyncComponent(() => import('./form.vue'))
+  console.log('authStore.authMenuListGet', authStore.authMenuListGet)
+  const MenuForm = defineAsyncComponent(
+    () => import('@/components/ultimate-add/index.vue')
+  )
   const menuFormRef = ref()
+  const menuFormKey = ref(0)
+
+  const findLabel = (
+    list: any[],
+    value: string | number
+  ): string | undefined => {
+    for (const item of list) {
+      if (item.id === value) {
+        return item.meta.title
+      }
+      if (item.children && item.children.length > 0) {
+        const found = findLabel(item.children, value)
+        if (found) return found
+      }
+    }
+    return undefined
+  }
 
   // 表单配置
   const formConfig = computed(() => [
     {
       label: '菜单类型',
-      prop: 'type',
+      prop: 'menuType',
       component: 'el-radio-group',
       optionComponent: 'el-radio-button',
       defaultValue: 2,
@@ -83,10 +106,15 @@
         checkStrictly: true,
         filterable: true,
         clearable: true,
-        nodeKey: 'path',
+        nodeKey: 'id',
         props: {
           label: (data: any) => data.meta.title,
           children: 'children',
+        },
+        onChange: (val: any) => {
+          console.log('上级菜单变更:', val)
+          const label = findLabel(authStore.authMenuListGet, val)
+          console.log('选中菜单名称:', label)
         },
       },
       tip: '未选择默认为第一级',
@@ -94,14 +122,14 @@
     },
     {
       label: '菜单名称',
-      prop: 'title',
+      prop: 'menuNameZh',
       component: 'el-input',
       props: { placeholder: '请输入菜单名称' },
       span: 24,
     },
     {
       label: '菜单名称(英文)',
-      prop: 'enName',
+      prop: 'menuNameEn',
       component: 'el-input',
       props: { placeholder: '请输入菜单名称(英文)' },
       span: 24,
@@ -116,7 +144,7 @@
 
     {
       label: '路由路径',
-      prop: 'path',
+      prop: 'routePath',
       component: 'el-input',
       span: 24,
       props: { placeholder: '请输入路由路径' },
@@ -151,7 +179,9 @@
 
   // 表单规则
   const formRules = {
-    type: [{ required: true, message: '请选择菜单类型', trigger: 'change' }],
+    menuType: [
+      { required: true, message: '请选择菜单类型', trigger: 'change' },
+    ],
     title: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
     name: [{ required: true, message: '请输入路由名称', trigger: 'blur' }],
     path: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
@@ -161,11 +191,11 @@
   const tableRef = ref<InstanceType<typeof UltimateTable> | null>(null)
 
   const columns = reactive<ColumnProps[]>([
-    {
-      type: 'selection',
-      width: 55,
-      fixed: 'left',
-    },
+    // {
+    //   type: 'selection',
+    //   width: 55,
+    //   fixed: 'left',
+    // },
     {
       type: 'index',
       label: '序号',
@@ -193,9 +223,6 @@
     {
       label: '路由',
       prop: 'path',
-      search: {
-        el: 'el-input',
-      },
     },
     {
       label: '操作',
@@ -207,12 +234,12 @@
 
   // 处理新增
   const handleAdd = () => {
-    menuFormRef.value?.open('add')
+    menuFormKey.value++
+    nextTick(() => {
+      menuFormRef.value?.open('add')
+    })
   }
-  // 处理批量删除
-  const handleBatchDelete = (selectedRows: any[]) => {
-    console.log('批量删除选中的行：', selectedRows)
-  }
+
   // 处理导出
   const handleExport = () => {
     console.log('导出数据')
@@ -222,12 +249,18 @@
 
   // 处理编辑
   const handleEdit = (row: any, index: number) => {
-    menuFormRef.value?.open('edit', row)
+    menuFormKey.value++
+    nextTick(() => {
+      menuFormRef.value?.open('edit', row)
+    })
   }
 
   // 处理查看
   const handleView = (row: any, index: number) => {
-    menuFormRef.value?.open('view', row)
+    menuFormKey.value++
+    nextTick(() => {
+      menuFormRef.value?.open('view', row)
+    })
   }
 
   // 处理删除
@@ -236,7 +269,12 @@
   }
 
   const handleMenuSubmit = async (data: any) => {
-    await saveMenuApi(data)
+    const parentName = data.parentId
+      ? findLabel(authStore.authMenuListGet, data.parentId)
+      : undefined
+    console.log('parentName', parentName)
+    const params = { ...data, parentName }
+    await addMenuApi(params)
     ElMessage.success('保存成功')
     menuFormRef.value?.close()
     handleRefresh()

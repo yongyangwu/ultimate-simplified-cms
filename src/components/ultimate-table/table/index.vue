@@ -13,11 +13,16 @@
       <div style="display: flex; gap: 8px; align-items: center">
         <!-- 默认操作按钮插槽 -->
         <slot name="tableHeader" :selected-rows="selectedRows">
-          <el-button type="primary" @click="handleAdd">
+          <el-button
+            v-if="props.showToolButtonList.includes('add')"
+            type="primary"
+            @click="handleAdd"
+          >
             <el-icon style="margin-right: 4px"><Plus /></el-icon>
             新增
           </el-button>
           <el-button
+            v-if="props.showToolButtonList.includes('delete')"
             type="danger"
             :disabled="selectedRows.length === 0"
             @click="handleBatchDelete"
@@ -25,7 +30,10 @@
             <el-icon style="margin-right: 4px"><Delete /></el-icon>
             批量删除
           </el-button>
-          <el-button @click="handleExport">
+          <el-button
+            v-if="props.showToolButtonList.includes('export')"
+            @click="handleExport"
+          >
             <el-icon style="margin-right: 4px"><Download /></el-icon>
             下载
           </el-button>
@@ -198,6 +206,7 @@
     total?: number // 总条数
     pageSize?: number // 每页显示条数
     currentPage?: number // 当前页码
+    showToolButtonList?: ('add' | 'delete' | 'export')[] // 工具栏按钮显示列表
   }
 
   const props = withDefaults(defineProps<TableProps>(), {
@@ -208,6 +217,7 @@
     total: 0,
     pageSize: 10,
     currentPage: 1,
+    showToolButtonList: () => ['add', 'delete', 'export'],
   })
 
   // 定义 emit

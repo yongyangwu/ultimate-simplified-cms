@@ -12,6 +12,7 @@
     :loading="loading"
     v-bind="props.tableProps"
     :pagination-props="props.paginationProps"
+    :show-tool-button-list="props.showToolButtonList"
     :total="total"
     :page-size="pageSize"
     :current-page="currentPage"

@@ -74,7 +74,8 @@ service.interceptors.response.use(
     function (response: any) {
         hideLoading();
 
-        if (response.status === 200) {
+        // 兼容处理 2xx 状态码
+        if ([200, 201, 202, 204].includes(response.status)) {
             // 成功时不显示消息，只返回数据
             return Promise.resolve(response.data);
         } else {
@@ -115,7 +116,8 @@ mockService.interceptors.response.use(
     function (response: any) {
         hideLoading();
 
-        if (response.status === 200) {
+        // 兼容处理 2xx 状态码
+        if ([200, 201, 202, 204].includes(response.status)) {
             // 成功时不显示消息，只返回数据
             return Promise.resolve(response.data);
         } else {

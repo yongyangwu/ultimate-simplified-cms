@@ -13,6 +13,7 @@ export interface UltimateTableProps {
     initParam?: Record<string, any> // 初始化请求参数
     tableProps?: Record<string, any> // Element Plus Table 原生属性
     paginationProps?: Record<string, any> // Element Plus Pagination 原生属性
+    showToolButtonList?: ('add' | 'delete' | 'export')[] // 工具栏按钮显示列表
 }
 
 // 响应数据字段映射配置
@@ -33,10 +34,13 @@ export type RenderScope<T extends DefaultRow = any> = {
     [key: string]: any;
 };
 
+// 辅助类型：用于在 tooltip 中展开复杂的类型定义，方便查看具体属性
+export type Simplify<T> = { [K in keyof T]: T[K] } & {}
+
 export interface ColumnProps<T extends DefaultRow = any>
     extends Partial<Omit<TableColumnCtx<T>, "children" | "renderCell" | "renderHeader">> {
     isShow?: boolean; // 是否显示在表格当中（默认为 true）
-    search?: SearchProps; // 搜索项配置
+    search?: Simplify<SearchProps>; // 搜索项配置
     render?: (scope: RenderScope<T>) => VNodeChild; // 自定义单元格内容渲染（tsx语法）
 }
 // 响应式断点类型

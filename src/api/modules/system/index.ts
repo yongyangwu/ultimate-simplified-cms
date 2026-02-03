@@ -1,6 +1,8 @@
 import request, { mockService } from '@/api'
 import menuData from '@/api/menu.json'
 import usersData from './users.json'
+import rolesData from './roles.json'
+
 
 // 获取菜单数据
 export const getMenuApi = () => {
@@ -13,6 +15,21 @@ export const getMenuApi = () => {
     //     url: "/menu/list",
     //     method: "get"
     // });
+}
+// 新增菜单
+export const addMenuApi = (data: any) => {
+    return request({
+        url: "/menu/add",
+        method: "post",
+        data
+    });
+}
+export const getRolesApi = () => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(rolesData)
+        }, 500)
+    })
 }
 export const getMenuApiMock = () => {
     return mockService({

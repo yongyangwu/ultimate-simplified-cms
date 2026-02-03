@@ -48,6 +48,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Search: typeof import('./src/components/ultimate-table/search/index.vue')['default']
     Table: typeof import('./src/components/ultimate-table/table/index.vue')['default']
+    UltimateAdd: typeof import('./src/components/ultimate-add/index.vue')['default']
     UltimateForm: typeof import('./src/components/ultimate-form/index.vue')['default']
     UltimateTable: typeof import('./src/components/ultimate-table/index.vue')['default']
   }
@@ -94,6 +95,7 @@ declare global {
   const RouterView: typeof import('vue-router')['RouterView']
   const Search: typeof import('./src/components/ultimate-table/search/index.vue')['default']
   const Table: typeof import('./src/components/ultimate-table/table/index.vue')['default']
+  const UltimateAdd: typeof import('./src/components/ultimate-add/index.vue')['default']
   const UltimateForm: typeof import('./src/components/ultimate-form/index.vue')['default']
   const UltimateTable: typeof import('./src/components/ultimate-table/index.vue')['default']
 }

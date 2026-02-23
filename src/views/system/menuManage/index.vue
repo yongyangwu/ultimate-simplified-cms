@@ -56,7 +56,6 @@
   import type { ColumnProps } from '@/components/ultimate-table/type'
   import { getMenuApi, addMenuApi } from '@/api/modules/system/index'
   import { useAuthStore } from '@/store/modules/auth'
-
   const authStore = useAuthStore()
   console.log('authStore.authMenuListGet', authStore.authMenuListGet)
   const MenuForm = defineAsyncComponent(
@@ -149,20 +148,20 @@
       span: 24,
       props: { placeholder: '请输入路由路径' },
     },
-    {
-      label: '图标',
-      prop: 'icon',
-      component: 'el-input',
-      props: { placeholder: '请输入图标名称' },
-      span: 12,
-    },
-    {
-      label: '排序',
-      prop: 'sort',
-      component: 'el-input-number',
-      props: { min: 0 },
-      span: 12,
-    },
+    // {
+    //   label: '图标',
+    //   prop: 'icon',
+    //   component: 'el-input',
+    //   props: { placeholder: '请输入图标名称' },
+    //   span: 12,
+    // },
+    // {
+    //   label: '排序',
+    //   prop: 'sort',
+    //   component: 'el-input-number',
+    //   props: { min: 0 },
+    //   span: 12,
+    // },
     {
       label: '是否隐藏',
       prop: 'isHide',
@@ -182,10 +181,13 @@
     menuType: [
       { required: true, message: '请选择菜单类型', trigger: 'change' },
     ],
-    title: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
-    name: [{ required: true, message: '请输入路由名称', trigger: 'blur' }],
-    path: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
-    component: [{ required: true, message: '请输入组件路径', trigger: 'blur' }],
+    menuNameZh: [
+      { required: true, message: '请输入菜单名称', trigger: 'blur' },
+    ],
+    menuNameEn: [
+      { required: true, message: '请输入菜单名称', trigger: 'blur' },
+    ],
+    routePath: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
   }
 
   const tableRef = ref<InstanceType<typeof UltimateTable> | null>(null)
@@ -245,8 +247,6 @@
     console.log('导出数据')
   }
 
-  // 处理打印
-
   // 处理编辑
   const handleEdit = (row: any, index: number) => {
     menuFormKey.value++
@@ -269,9 +269,11 @@
   }
 
   const handleMenuSubmit = async (data: any) => {
+    // 如果没有选择上级菜单，parentId 默认为 0
+    data.parentId = data.parentId || 0
     const parentName = data.parentId
       ? findLabel(authStore.authMenuListGet, data.parentId)
-      : undefined
+      : ''
     console.log('parentName', parentName)
     const params = { ...data, parentName }
     await addMenuApi(params)

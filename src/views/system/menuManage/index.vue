@@ -3,9 +3,8 @@
     <ultimate-table
       ref="tableRef"
       :columns="columns"
-      :request-api="getMenuApi"
-      :responseMapping="{ list: 'data', total: 'total' }"
-      :dataCallback="handleDataCallback"
+      :data="tableData"
+      :pagination-props="false"
       :showToolButtonList="['add', 'export']"
       @add="handleAdd"
       @export="handleExport"
@@ -56,8 +55,9 @@
   import type { ColumnProps } from '@/components/ultimate-table/type'
   import { getMenuApi, addMenuApi } from '@/api/modules/system/index'
   import { useAuthStore } from '@/store/modules/auth'
+  import { handleMenuTree } from '@/utils'
   const authStore = useAuthStore()
-  console.log('authStore.authMenuListGet', authStore.authMenuListGet)
+
   const MenuForm = defineAsyncComponent(
     () => import('@/components/ultimate-add/index.vue')
   )
@@ -69,7 +69,7 @@
     value: string | number
   ): string | undefined => {
     for (const item of list) {
-      if (item.id === value) {
+      if (String(item.id) === String(value)) {
         return item.meta.title
       }
       if (item.children && item.children.length > 0) {
@@ -99,9 +99,9 @@
       label: '上级菜单',
       prop: 'parentId',
       component: 'el-tree-select',
-      props: {
+      props: (scope: any) => ({
         placeholder: '请选择上级菜单',
-        data: authStore.authMenuListGet,
+        data: authStore.menuTreeGet,
         checkStrictly: true,
         filterable: true,
         clearable: true,
@@ -109,13 +109,18 @@
         props: {
           label: (data: any) => data.meta.title,
           children: 'children',
+          disabled: (data: any) => {
+            if ([1, 2].includes(scope.menuType)) return data.menuType !== 1
+            if (scope.menuType === 3) return data.menuType !== 2
+            return false
+          },
         },
         onChange: (val: any) => {
-          console.log('上级菜单变更:', val)
-          const label = findLabel(authStore.authMenuListGet, val)
+          // console.log('上级菜单变更:', val)
+          const label = findLabel(authStore.menuTreeGet, val)
           console.log('选中菜单名称:', label)
         },
-      },
+      }),
       tip: '未选择默认为第一级',
       span: 24,
     },
@@ -125,6 +130,7 @@
       component: 'el-input',
       props: { placeholder: '请输入菜单名称' },
       span: 24,
+      // isShow: (scope: any) => scope.menuType === 2,
     },
     {
       label: '菜单名称(英文)',
@@ -132,6 +138,7 @@
       component: 'el-input',
       props: { placeholder: '请输入菜单名称(英文)' },
       span: 24,
+      // isShow: (scope: any) => scope.menuType === 2,
     },
     // {
     //   label: '路由名称',
@@ -143,10 +150,35 @@
 
     {
       label: '路由路径',
-      prop: 'routePath',
+      prop: 'path',
       component: 'el-input',
       span: 24,
       props: { placeholder: '请输入路由路径' },
+      isShow: (scope: any) => scope.menuType !== 3,
+    },
+    {
+      label: '路由重定向',
+      prop: 'redirect',
+      component: 'el-input',
+      span: 24,
+      props: { placeholder: '请输入路由路径' },
+      isShow: (scope: any) => scope.menuType !== 3,
+    },
+    {
+      label: '组件路径',
+      prop: 'component',
+      component: 'el-input',
+      span: 24,
+      props: { placeholder: '请输入组件路径' },
+      isShow: (scope: any) => scope.menuType === 2,
+    },
+    {
+      label: '权限标识',
+      prop: 'permissonCode',
+      component: 'el-input',
+      span: 24,
+      props: { placeholder: '请输入按钮权限标识' },
+      isShow: (scope: any) => scope.menuType === 3,
     },
     // {
     //   label: '图标',
@@ -166,12 +198,28 @@
       label: '是否隐藏',
       prop: 'isHide',
       component: 'el-switch',
-      span: 12,
+      span: 24,
+      isShow: (scope: any) => scope.menuType === 2,
     },
     {
       label: '是否缓存',
       prop: 'isKeepAlive',
       component: 'el-switch',
+      span: 24,
+      isShow: (scope: any) => scope.menuType === 2,
+    },
+    {
+      label: '全屏显示',
+      prop: 'isFull',
+      component: 'el-switch',
+      span: 24,
+      isShow: (scope: any) => scope.menuType === 2,
+    },
+    {
+      label: '排序',
+      prop: 'order',
+      component: 'el-input-number',
+      defaultValue: 1,
       span: 12,
     },
   ])
@@ -187,10 +235,25 @@
     menuNameEn: [
       { required: true, message: '请输入菜单名称', trigger: 'blur' },
     ],
-    routePath: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
+    path: [{ required: true, message: '请输入路由路径', trigger: 'blur' }],
+    redirect: [
+      { required: true, message: '请输入路由重定向路径', trigger: 'blur' },
+    ],
+    component: [{ required: true, message: '请输入组件路径', trigger: 'blur' }],
+    permissonCode: [
+      { required: true, message: '请输入权限标识', trigger: 'blur' },
+    ],
   }
 
   const tableRef = ref<InstanceType<typeof UltimateTable> | null>(null)
+  const tableData = ref<any[]>([])
+
+  const getTableData = async () => {
+    const data = await getMenuApi()
+    console.log('data', data)
+    tableData.value = handleMenuTree(data)
+  }
+  getTableData()
 
   const columns = reactive<ColumnProps[]>([
     // {
@@ -198,14 +261,15 @@
     //   width: 55,
     //   fixed: 'left',
     // },
-    {
-      type: 'index',
-      label: '序号',
-      width: 60,
-    },
+    // {
+    //   type: 'index',
+    //   label: '序号',
+    //   width: 60,
+    // },
     {
       label: '菜单名称',
-      prop: 'name',
+      prop: 'title',
+      width: 120,
       search: {
         el: 'el-input',
       },
@@ -213,8 +277,9 @@
     {
       label: '菜单类型',
       prop: 'menuType',
+      width: 90,
       render: ({ row }) => {
-        console.log('row.menuType', row)
+        // console.log('row.menuType', row)
         return row.menuType === 1
           ? '目录'
           : row.menuType === 2
@@ -223,8 +288,13 @@
       },
     },
     {
-      label: '路由',
+      label: '路径',
       prop: 'path',
+      width: 200,
+    },
+    {
+      label: '组件',
+      prop: 'component',
     },
     {
       label: '操作',
@@ -283,10 +353,6 @@
   }
 
   const handleRefresh = () => {
-    tableRef.value?.getTableData()
-  }
-  const handleDataCallback = (data: any) => {
-    console.log('数据回调', data)
-    return data
+    getTableData()
   }
 </script>

@@ -13,44 +13,58 @@
       :label-width="props.labelWidth"
     >
       <el-row :gutter="20">
-        <el-col
-          v-for="item in formConfig"
-          :key="item.prop"
-          :span="item.span || 24"
-        >
-          <el-form-item :label="item.label" :prop="item.prop">
-            <component
-              :is="item.component"
-              v-model="formData[item.prop]"
-              v-bind="item.props"
-              :disabled="mode === 'view' || item.props?.disabled"
-              style="width: 100%"
-            >
-              <template v-if="item.options" #default>
-                <component
-                  :is="item.optionComponent"
-                  v-for="opt in item.options"
-                  :key="opt.value"
-                  :label="opt.label"
-                  :value="opt.value"
-                />
-              </template>
-            </component>
-            <div
-              v-if="item.tip"
-              class="el-form-item__error"
-              style="
-                position: static;
-                color: #999;
-                font-size: 12px;
-                line-height: 1.5;
-                padding-top: 4px;
-              "
-            >
-              {{ item.tip }}
-            </div>
-          </el-form-item>
-        </el-col>
+        <template v-for="item in formConfig" :key="item.prop">
+          <el-col
+            v-if="
+              typeof item.isShow === 'function'
+                ? item.isShow(formData)
+                : item.isShow !== false
+            "
+            :span="item.span || 24"
+          >
+            <el-form-item :label="item.label" :prop="item.prop">
+              <component
+                :is="item.component"
+                v-model="formData[item.prop]"
+                v-bind="
+                  typeof item.props === 'function'
+                    ? item.props(formData)
+                    : item.props
+                "
+                :disabled="
+                  mode === 'view' ||
+                  (typeof item.props === 'function'
+                    ? item.props(formData).disabled
+                    : item.props?.disabled)
+                "
+                style="width: 100%"
+              >
+                <template v-if="item.options" #default>
+                  <component
+                    :is="item.optionComponent"
+                    v-for="opt in item.options"
+                    :key="opt.value"
+                    :label="opt.label"
+                    :value="opt.value"
+                  />
+                </template>
+              </component>
+              <div
+                v-if="item.tip"
+                class="el-form-item__error"
+                style="
+                  position: static;
+                  color: #999;
+                  font-size: 12px;
+                  line-height: 1.5;
+                  padding-top: 4px;
+                "
+              >
+                {{ item.tip }}
+              </div>
+            </el-form-item>
+          </el-col>
+        </template>
       </el-row>
     </el-form>
     <template #footer>
@@ -80,6 +94,7 @@
     optionComponent?: string
     defaultValue?: any
     tip?: string
+    isShow?: boolean | ((formData: any) => boolean)
   }
 
   interface Props {

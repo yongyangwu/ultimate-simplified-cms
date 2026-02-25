@@ -4,14 +4,14 @@ export const staticRoutes = [
         path: '/',
         redirect: '/home',
     },
-    {
-        path: '/home',
-        name: 'home',
-        component: () => import('@/views/home/index.vue'),
-        meta: {
-            title: 'home',
-        },
-    },
+    // {
+    //     path: '/home',
+    //     name: 'home',
+    //     component: () => import('@/views/home/index.vue'),
+    //     meta: {
+    //         title: 'home',
+    //     },
+    // },
     {
         path: '/login',
         name: 'login',

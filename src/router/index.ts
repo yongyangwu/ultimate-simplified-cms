@@ -30,8 +30,7 @@ const router = createRouter({
 router.beforeEach(async (to, _from, next) => {
     const authStore = useAuthStore()
     // 1.如果没有加载过动态路由
-    if (!authStore.authMenuListGet.length) {
-        // alert(88)
+    if (!authStore.authFlatMenuListGet.length) {
         await initDynamicRouter()
         return next({ ...to, replace: true })
     }

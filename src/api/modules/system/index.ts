@@ -6,15 +6,15 @@ import rolesData from './roles.json'
 
 // 获取菜单数据
 export const getMenuApi = () => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(menuData)
-        }, 500)
-    })
-    // return request({
-    //     url: "/menu/list",
-    //     method: "get"
-    // });
+    // return new Promise((resolve) => {
+    //     setTimeout(() => {
+    //         resolve(menuData)
+    //     }, 500)
+    // })
+    return request({
+        url: "/menu/list",
+        method: "get"
+    });
 }
 // 新增菜单
 export const addMenuApi = (data: any) => {

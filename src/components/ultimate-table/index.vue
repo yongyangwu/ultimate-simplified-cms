@@ -1,11 +1,11 @@
 <template>
-  <search
+  <Search
     :columns="props.columns"
     :searchParam="searchParam"
     @search="handleSearch"
     @reset="handleReset"
     @options-loaded="handleOptionsLoaded"
-  ></search>
+  ></Search>
   <Table
     :columns="props.columns"
     :data="tableData"
@@ -48,8 +48,8 @@
   import type { UltimateTableProps } from '@/components/ultimate-table/type'
   const props = withDefaults(defineProps<UltimateTableProps>(), {
     columns: () => [],
-    data: undefined,
-    requestApi: undefined,
+    data: () => [],
+    requestApi: () => Promise.resolve({}),
     requestAuto: true,
     initParam: () => ({}),
     tableProps: () => ({ border: true, highlightCurrentRow: true }),

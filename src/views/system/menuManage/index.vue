@@ -48,7 +48,7 @@
   import { useAuthStore } from '@/store/modules/auth'
   import { transferFlatMenuListToTree } from '@/utils'
   const authStore = useAuthStore()
-  console.log('authStore.menuTreeGet', authStore.menuTreeGet)
+  // console.log('authStore.menuTreeGet', authStore.menuTreeGet)
 
   const MenuForm = defineAsyncComponent(
     () => import('@/components/ultimate-add/index.vue')

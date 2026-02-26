@@ -44,7 +44,7 @@
   // console.log('route.fullPath', route.fullPath)
 
   const tabsMenuValue = ref(route.fullPath)
-  console.log('tabStore.tabsMenuList', tabStore.tabsMenuList)
+  // console.log('tabStore.tabsMenuList', tabStore.tabsMenuList)
   const tabsMenuList = computed(() => tabStore.tabsMenuList)
   const tabsIcon = computed(() => globalStore.tabsIcon)
 
@@ -57,7 +57,7 @@
   watch(
     () => route.fullPath,
     () => {
-      console.log('route---', route)
+      // console.log('route---', route)
       if (route.meta.isFull) return
       tabsMenuValue.value = route.fullPath
       const tabsParams = {
@@ -76,7 +76,7 @@
   // 初始化需要固定的 tabs
   const initTabs = () => {
     // alert(11)
-    console.log(7777, authStore.authFlatMenuList)
+    // console.log(7777, authStore.authFlatMenuList)
     authStore.authFlatMenuList.forEach((item) => {
       // console.log(9999, item)
       if (item.isAffix && !item.isHide && !item.isFull) {

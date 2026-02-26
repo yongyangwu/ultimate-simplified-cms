@@ -14,19 +14,10 @@
       </template>
       <!-- 操作列插槽 -->
       <template #operation="{ row, $index }">
-        <el-button
-          type="primary"
-          link
-          size="small"
-          @click="handleView(row, $index)"
+        <el-button type="primary" link size="small" @click="handleView(row)"
           >查看</el-button
         >
-        <el-button
-          type="primary"
-          link
-          size="small"
-          @click="handleEdit(row, $index)"
-        >
+        <el-button type="primary" link size="small" @click="handleEdit(row)">
           编辑
         </el-button>
         <el-button
@@ -55,7 +46,7 @@
   import type { ColumnProps } from '@/components/ultimate-table/type'
   import { getMenuApi, addMenuApi } from '@/api/modules/system/index'
   import { useAuthStore } from '@/store/modules/auth'
-  import { handleMenuTree, transferFlatMenuListToTree } from '@/utils'
+  import { transferFlatMenuListToTree } from '@/utils'
   const authStore = useAuthStore()
   console.log('authStore.menuTreeGet', authStore.menuTreeGet)
 
@@ -221,6 +212,7 @@
       prop: 'order',
       component: 'el-input-number',
       defaultValue: 1,
+      isShow: (scope: any) => scope.menuType !== 3,
       span: 12,
     },
   ])
@@ -270,6 +262,7 @@
       label: '菜单名称',
       prop: 'title',
       width: 120,
+      fixed: 'left',
       search: {
         el: 'el-input',
       },
@@ -279,22 +272,56 @@
       prop: 'menuType',
       width: 90,
       render: ({ row }) => {
-        // console.log('row.menuType', row)
-        return row.menuType === 1
-          ? '目录'
-          : row.menuType === 2
-            ? '菜单'
-            : '按钮'
+        if (row.menuType === 1) {
+          return (
+            <el-button type="primary" size="small" plain>
+              目录
+            </el-button>
+          )
+        }
+        if (row.menuType === 2) {
+          return (
+            <el-button type="success" size="small" plain>
+              菜单
+            </el-button>
+          )
+        }
+        return (
+          <el-button type="info" size="small" plain>
+            按钮
+          </el-button>
+        )
       },
     },
     {
       label: '路径',
       prop: 'path',
-      width: 200,
+      width: 180,
     },
     {
       label: '组件',
       prop: 'component',
+      width: 200,
+    },
+    {
+      label: '是否隐藏',
+      prop: 'isHide',
+      width: 100,
+    },
+    {
+      label: '是否缓存',
+      prop: 'isKeepAlive',
+      width: 100,
+    },
+    {
+      label: '是否全屏',
+      prop: 'isFull',
+      width: 100,
+    },
+    {
+      label: '权限标识',
+      prop: 'permissonCode',
+      width: 100,
     },
     {
       label: '操作',
@@ -318,7 +345,7 @@
   }
 
   // 处理编辑
-  const handleEdit = (row: any, index: number) => {
+  const handleEdit = (row: any) => {
     menuFormKey.value++
     nextTick(() => {
       menuFormRef.value?.open('edit', row)
@@ -326,7 +353,7 @@
   }
 
   // 处理查看
-  const handleView = (row: any, index: number) => {
+  const handleView = (row: any) => {
     menuFormKey.value++
     nextTick(() => {
       menuFormRef.value?.open('view', row)

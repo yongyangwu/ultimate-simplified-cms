@@ -30,6 +30,10 @@ export const initDynamicRouter = async () => {
         }
         // 添加动态路由
         authStore.authFlatMenuList.forEach((item) => {
+            //剔除按钮类型的菜单
+            if (item.menuType === 3) {
+                return
+            }
             item.meta = {
                 icon: item.icon,
                 title: item.menuNameZh || item.title || '',

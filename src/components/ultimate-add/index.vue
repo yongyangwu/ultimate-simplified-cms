@@ -34,8 +34,8 @@
                 :disabled="
                   mode === 'view' ||
                   (typeof item.props === 'function'
-                    ? item.props(formData).disabled
-                    : item.props?.disabled)
+                    ? !!item.props(formData).disabled
+                    : !!item.props?.disabled)
                 "
                 style="width: 100%"
               >

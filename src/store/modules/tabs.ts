@@ -14,6 +14,7 @@ export const useTabsStore = defineStore('ultimate-tabs', {
         // Add Tabs
         async addTabs(tabItem: TabsMenuProps) {
             if (this.tabsMenuList.every((item) => item.path !== tabItem.path)) {
+                console.log('tabItem----', tabItem)
                 this.tabsMenuList.push(tabItem)
             }
             // add keepalive

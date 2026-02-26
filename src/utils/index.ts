@@ -141,19 +141,57 @@ export function getUrlWithParams() {
  * @returns {Array}
  */
 export function handleMenuTree(menuList: any[], parentId: string | number = 0): any[] {
-    // console.log(8888999, menuList)
     // 第一次调用时，深拷贝原始数据，避免直接操作 Proxy 且防止修改原数据
     const list = JSON.parse(JSON.stringify(menuList))
     const buildTree = (data: any[], pid: string | number) => {
         const tree: any[] = []
         for (const item of data) {
             if (String(item.parentId) === String(pid)) {
+                // 如果是按钮类型 (menuType === 3)，则不添加到菜单树中
+                if (item.menuType === 3) continue
+
                 // 将指定的字段提取到 meta 对象中
                 const metaFields = ['icon', 'isKeepAlive', 'isAffix', 'isHide', 'isFull']
                 item.meta = item.meta || {}
 
                 // 处理标题，优先使用 menuNameZh
                 item.meta.title = item.menuNameZh || item.title || ''
+                // item.title = item.menuNameZh || item.title || ''
+
+                metaFields.forEach(field => {
+                    if (Object.prototype.hasOwnProperty.call(item, field)) {
+                        item.meta[field] = item[field]
+                        delete item[field] // 从顶层删除
+                    }
+                })
+
+                const children = buildTree(data, item.id)
+                if (children.length > 0) {
+                    item.children = children
+                }
+                tree.push(item)
+            }
+        }
+        return tree
+    }
+    return buildTree(list, parentId)
+}
+
+export function transferFlatMenuListToTree(menuList: any[], parentId: string | number = 0): any[] {
+    // 第一次调用时，深拷贝原始数据，避免直接操作 Proxy 且防止修改原数据
+    const list = JSON.parse(JSON.stringify(menuList))
+    const buildTree = (data: any[], pid: string | number) => {
+        const tree: any[] = []
+        for (const item of data) {
+            if (String(item.parentId) === String(pid)) {
+
+                // 将指定的字段提取到 meta 对象中
+                const metaFields = ['icon', 'isKeepAlive', 'isAffix', 'isHide', 'isFull']
+                item.meta = item.meta || {}
+
+                // 处理标题，优先使用 menuNameZh
+                item.meta.title = item.menuNameZh || item.title || ''
+                // item.title = item.menuNameZh || item.title || ''
 
                 metaFields.forEach(field => {
                     if (Object.prototype.hasOwnProperty.call(item, field)) {

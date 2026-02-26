@@ -26,7 +26,7 @@
     return path
   })
   const isCollapse = computed(() => globalStore.isCollapse)
-  console.log('authStore.menuTreeGet', authStore.menuTreeGet)
+  // console.log('authStore.menuTreeGet', authStore.menuTreeGet)
   const menuList = computed(() => authStore.menuTreeGet)
   // console.log('menuList', menuList.value)
 </script>

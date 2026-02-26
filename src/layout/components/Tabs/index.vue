@@ -44,6 +44,7 @@
   // console.log('route.fullPath', route.fullPath)
 
   const tabsMenuValue = ref(route.fullPath)
+  console.log('tabStore.tabsMenuList', tabStore.tabsMenuList)
   const tabsMenuList = computed(() => tabStore.tabsMenuList)
   const tabsIcon = computed(() => globalStore.tabsIcon)
 
@@ -56,6 +57,7 @@
   watch(
     () => route.fullPath,
     () => {
+      console.log('route---', route)
       if (route.meta.isFull) return
       tabsMenuValue.value = route.fullPath
       const tabsParams = {
@@ -73,19 +75,36 @@
 
   // 初始化需要固定的 tabs
   const initTabs = () => {
-    authStore.flatMenuListGet.forEach((item) => {
-      if (item.meta.isAffix && !item.meta.isHide && !item.meta.isFull) {
+    // alert(11)
+    console.log(7777, authStore.authFlatMenuList)
+    authStore.authFlatMenuList.forEach((item) => {
+      // console.log(9999, item)
+      if (item.isAffix && !item.isHide && !item.isFull) {
         const tabsParams = {
-          icon: item.meta.icon,
-          title: item.meta.title,
-          path: item.path,
-          name: item.name,
-          close: !item.meta.isAffix,
-          isKeepAlive: item.meta.isKeepAlive,
+          icon: item?.icon,
+          title: item?.title,
+          path: item?.path,
+          name: item?.name,
+          close: !item?.isAffix,
+          isKeepAlive: item?.isKeepAlive,
         }
+        // console.log('tabsParams', tabsParams)
         tabStore.addTabs(tabsParams)
       }
     })
+    // authStore.flatMenuListGet.forEach((item) => {
+    //   if (item.meta.isAffix && !item.meta.isHide && !item.meta.isFull) {
+    //     const tabsParams = {
+    //       icon: item.meta.icon,
+    //       title: item.meta.title,
+    //       path: item.path,
+    //       name: item.name,
+    //       close: !item.meta.isAffix,
+    //       isKeepAlive: item.meta.isKeepAlive,
+    //     }
+    //     tabStore.addTabs(tabsParams)
+    //   }
+    // })
   }
 
   // tabs 拖拽排序

@@ -14,6 +14,7 @@ export const initDynamicRouter = async () => {
     try {
         // 1.获取菜单列表 && 按钮权限列表
         await authStore.getAuthFlatMenuList()
+        // alert(22)
         // await authStore.getAuthButtonList();
         // 判断当前用户有没有菜单权限
         if (!authStore.authFlatMenuList.length) {
@@ -29,10 +30,18 @@ export const initDynamicRouter = async () => {
         }
         // 添加动态路由
         authStore.authFlatMenuList.forEach((item) => {
+            item.meta = {
+                icon: item.icon,
+                title: item.menuNameZh || item.title || '',
+                isKeepAlive: item.isKeepAlive,
+                isAffix: item.isAffix,
+                isHide: item.isHide,
+                isFull: item.isFull,
+            }
             if (item.component && typeof item.component == 'string') {
                 item.component = modules['/src/views' + item.component + '.vue']
             }
-            if (item?.isFull) {
+            if (item.meta.isFull) {
                 router.addRoute(item as unknown as RouteRecordRaw)
             } else {
                 router.addRoute('layout', item as unknown as RouteRecordRaw)

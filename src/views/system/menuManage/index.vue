@@ -55,8 +55,9 @@
   import type { ColumnProps } from '@/components/ultimate-table/type'
   import { getMenuApi, addMenuApi } from '@/api/modules/system/index'
   import { useAuthStore } from '@/store/modules/auth'
-  import { handleMenuTree } from '@/utils'
+  import { handleMenuTree, transferFlatMenuListToTree } from '@/utils'
   const authStore = useAuthStore()
+  console.log('authStore.menuTreeGet', authStore.menuTreeGet)
 
   const MenuForm = defineAsyncComponent(
     () => import('@/components/ultimate-add/index.vue')
@@ -249,9 +250,8 @@
   const tableData = ref<any[]>([])
 
   const getTableData = async () => {
-    const data = await getMenuApi()
-    console.log('data', data)
-    tableData.value = handleMenuTree(data)
+    const data: any = await getMenuApi()
+    tableData.value = transferFlatMenuListToTree(data)
   }
   getTableData()
 

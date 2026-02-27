@@ -11,9 +11,9 @@ export interface UltimateTableProps {
     requestMapping?: RequestMapping // 请求参数字段映射，默认 { pageNo: 'pageNo', pageSize: 'pageSize' }
     responseMapping?: ResponseMapping // 响应数据字段映射，默认 { list: 'data', total: 'total' }
     initParam?: Record<string, any> // 初始化请求参数
-    tableProps?: Record<string, any> // Element Plus Table 原生属性
     paginationProps?: Record<string, any> | false // Element Plus Pagination 原生属性，传 false 隐藏分页
     showToolButtonList?: ('add' | 'delete' | 'export')[] // 工具栏按钮显示列表
+    tableProps?: Record<string, any> // Element Plus Table 原生属性
 }
 
 // 响应数据字段映射配置

@@ -48,8 +48,8 @@
   import type { UltimateTableProps } from '@/components/ultimate-table/type'
   const props = withDefaults(defineProps<UltimateTableProps>(), {
     columns: () => [],
-    data: () => [],
-    requestApi: () => Promise.resolve({}),
+    data: undefined,
+    requestApi: undefined,
     requestAuto: true,
     initParam: () => ({}),
     tableProps: () => ({ border: true, highlightCurrentRow: true }),

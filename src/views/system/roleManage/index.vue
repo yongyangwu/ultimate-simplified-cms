@@ -12,19 +12,10 @@
     >
       <!-- 操作列插槽 -->
       <template #operation="{ row, $index }">
-        <el-button
-          type="primary"
-          link
-          size="small"
-          @click="handleView(row, $index)"
+        <el-button type="primary" link size="small" @click="handleView(row)"
           >查看</el-button
         >
-        <el-button
-          type="primary"
-          link
-          size="small"
-          @click="handleEdit(row, $index)"
-        >
+        <el-button type="primary" link size="small" @click="handleEdit(row)">
           编辑
         </el-button>
         <el-button
@@ -58,10 +49,13 @@
   import { ElMessage } from 'element-plus'
   import UltimateTable from '@/components/ultimate-table/index.vue'
   import type { ColumnProps } from '@/components/ultimate-table/type'
-  import { saveMenuApi, getRolesApi } from '@/api/modules/system/index'
-  import { useAuthStore } from '@/store/modules/auth'
+  import {
+    addRoleApi,
+    getRolesApi,
+    deleteRoleApi,
+    updateRoleApi,
+  } from '@/api/modules/system/index'
 
-  const authStore = useAuthStore()
   const MenuForm = defineAsyncComponent(
     () => import('@/components/ultimate-add/index.vue')
   )
@@ -100,11 +94,11 @@
   const tableRef = ref<InstanceType<typeof UltimateTable> | null>(null)
 
   const columns = reactive<ColumnProps[]>([
-    // {
-    //   type: 'selection',
-    //   width: 55,
-    //   fixed: 'left',
-    // },
+    {
+      type: 'selection',
+      width: 55,
+      fixed: 'left',
+    },
     {
       type: 'index',
       label: '序号',
@@ -155,22 +149,29 @@
   // 处理打印
 
   // 处理编辑
-  const handleEdit = (row: any, index: number) => {
+  const handleEdit = (row: any) => {
     menuFormRef.value?.open('edit', row)
   }
 
   // 处理查看
-  const handleView = (row: any, index: number) => {
+  const handleView = (row: any) => {
     menuFormRef.value?.open('view', row)
   }
 
   // 处理删除
-  const handleDelete = (row: any, index: number) => {
+  const handleDelete = async (row: any, index: number) => {
     console.log('删除第', index, '行数据：', row)
+    await deleteRoleApi(row.id)
+    ElMessage.success('删除成功')
+    handleRefresh()
   }
 
   const handleMenuSubmit = async (data: any) => {
-    await saveMenuApi(data)
+    if (data.id) {
+      await updateRoleApi(data.id, data)
+    } else {
+      await addRoleApi(data)
+    }
     ElMessage.success('保存成功')
     menuFormRef.value?.close()
     handleRefresh()

@@ -1,5 +1,6 @@
 {
   "code": 200,
+  "total": 25,
   "data": [
     {
       "id": 1,
@@ -40,6 +41,166 @@
       "description": "用于功能测试的临时账号",
       "status": 0,
       "createTime": "2023-01-05 16:45:00"
+    },
+    {
+      "id": 6,
+      "name": "审计员",
+      "code": "AUDITOR",
+      "description": "负责日志审计和合规检查",
+      "status": 1,
+      "createTime": "2023-01-06 11:05:00"
+    },
+    {
+      "id": 7,
+      "name": "财务主管",
+      "code": "FINANCE_MANAGER",
+      "description": "负责财务审批与报表管理",
+      "status": 1,
+      "createTime": "2023-01-07 09:40:00"
+    },
+    {
+      "id": 8,
+      "name": "内容编辑",
+      "code": "CONTENT_EDITOR",
+      "description": "负责内容编辑与发布",
+      "status": 1,
+      "createTime": "2023-01-08 15:10:00"
+    },
+    {
+      "id": 9,
+      "name": "客服专员",
+      "code": "SUPPORT",
+      "description": "负责客户咨询与工单处理",
+      "status": 1,
+      "createTime": "2023-01-09 13:25:00"
+    },
+    {
+      "id": 10,
+      "name": "数据分析师",
+      "code": "ANALYST",
+      "description": "负责数据分析与可视化报告",
+      "status": 1,
+      "createTime": "2023-01-10 10:50:00"
+    },
+    {
+      "id": 11,
+      "name": "安全管理员",
+      "code": "SECURITY_ADMIN",
+      "description": "负责安全策略与权限核查",
+      "status": 1,
+      "createTime": "2023-01-11 16:05:00"
+    },
+    {
+      "id": 12,
+      "name": "市场推广",
+      "code": "MARKETING",
+      "description": "负责市场推广和活动投放",
+      "status": 1,
+      "createTime": "2023-01-12 14:35:00"
+    },
+    {
+      "id": 13,
+      "name": "产品经理",
+      "code": "PRODUCT_MANAGER",
+      "description": "负责需求规划与产品迭代",
+      "status": 1,
+      "createTime": "2023-01-13 11:20:00"
+    },
+    {
+      "id": 14,
+      "name": "技术支持",
+      "code": "TECH_SUPPORT",
+      "description": "负责技术问题排查与支持",
+      "status": 1,
+      "createTime": "2023-01-14 09:55:00"
+    },
+    {
+      "id": 15,
+      "name": "外包协作",
+      "code": "OUTSOURCER",
+      "description": "用于外包协作的有限权限账号",
+      "status": 0,
+      "createTime": "2023-01-15 17:15:00"
+    },
+    {
+      "id": 16,
+      "name": "实习生",
+      "code": "INTERN",
+      "description": "用于实习生学习与辅助工作",
+      "status": 1,
+      "createTime": "2023-01-16 08:30:00"
+    },
+    {
+      "id": 17,
+      "name": "访客",
+      "code": "GUEST",
+      "description": "只读访问权限",
+      "status": 1,
+      "createTime": "2023-01-17 12:00:00"
+    },
+    {
+      "id": 18,
+      "name": "项目主管",
+      "code": "PROJECT_LEAD",
+      "description": "负责项目进度与资源协调",
+      "status": 1,
+      "createTime": "2023-01-18 10:10:00"
+    },
+    {
+      "id": 19,
+      "name": "仓库管理员",
+      "code": "WAREHOUSE",
+      "description": "负责库存与出入库管理",
+      "status": 1,
+      "createTime": "2023-01-19 15:45:00"
+    },
+    {
+      "id": 20,
+      "name": "合规专员",
+      "code": "COMPLIANCE",
+      "description": "负责合规审核与风险控制",
+      "status": 1,
+      "createTime": "2023-01-20 13:05:00"
+    },
+    {
+      "id": 21,
+      "name": "运维工程师",
+      "code": "DEVOPS",
+      "description": "负责系统运维与发布保障",
+      "status": 1,
+      "createTime": "2023-01-21 09:05:00"
+    },
+    {
+      "id": 22,
+      "name": "质量管理员",
+      "code": "QA",
+      "description": "负责质量检查与测试管理",
+      "status": 1,
+      "createTime": "2023-01-22 11:55:00"
+    },
+    {
+      "id": 23,
+      "name": "内容审核",
+      "code": "CONTENT_REVIEWER",
+      "description": "负责内容审核与敏感信息处理",
+      "status": 1,
+      "createTime": "2023-01-23 14:15:00"
+    },
+    {
+      "id": 24,
+      "name": "业务专员",
+      "code": "BUSINESS",
+      "description": "负责业务对接与需求跟进",
+      "status": 1,
+      "createTime": "2023-01-24 16:40:00"
+    },
+    {
+      "id": 25,
+      "name": "停用账号",
+      "code": "DISABLED",
+      "description": "已停用的历史账号",
+      "status": 0,
+      "createTime": "2023-01-25 18:00:00"
     }
   ]
 }

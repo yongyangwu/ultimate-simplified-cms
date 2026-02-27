@@ -24,12 +24,43 @@ export const addMenuApi = (data: any) => {
         data
     });
 }
-export const getRolesApi = () => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(rolesData)
-        }, 500)
-    })
+
+// 新增角色
+export const addRoleApi = (data: any) => {
+    return request({
+        url: "/roles/add",
+        method: "post",
+        data
+    });
+}
+
+// 删除角色
+export const deleteRoleApi = (id: string | number) => {
+    return request({
+        url: `/roles/delete/${id}`,
+        method: "delete"
+    });
+}
+
+// 编辑角色
+export const updateRoleApi = (id: string | number, data: any) => {
+    return request({
+        url: `/roles/edit/${id}`,
+        method: "put",
+        data
+    });
+}
+export const getRolesApi = (params: any) => {
+    return request({
+        url: "/roles/list",
+        method: "get",
+        params
+    });
+    // return new Promise((resolve) => {
+    //     setTimeout(() => {
+    //         resolve(rolesData)
+    //     }, 500)
+    // })
 }
 export const getMenuApiMock = () => {
     return mockService({
